@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ElevenGalaxy Prototip 2</title>
+<title>ElevenGalaxy Basit Giriş & Menü</title>
 <style>
   :root {
     --bg-light: #f5f7fa;
@@ -43,7 +43,7 @@
     margin-right: 16px;
     user-select: none;
     cursor: pointer;
-    display: none; /* Menü ancak giriş yapınca görünür */
+    display: none; /* Menü sadece giriş sonrası görünür */
   }
   #welcomeText {
     flex-grow: 1;
@@ -83,12 +83,6 @@
   }
   #sideMenu nav button:hover {
     background: var(--accent);
-  }
-  #sideMenu nav button .icon {
-    margin-right: 10px;
-    font-size: 1.3rem;
-    width: 20px;
-    text-align: center;
   }
   main {
     margin-top: 56px;
@@ -167,10 +161,10 @@
 
 <div id="sideMenu" aria-label="Menü">
   <nav>
-    <button id="navProfile"><span class="icon">👤</span> Profil</button>
-    <button id="navMessages"><span class="icon">💬</span> Mesajlar</button>
-    <button id="navUsers"><span class="icon">👥</span> Kullanıcılar</button>
-    <button id="navSettings"><span class="icon">⚙️</span> Ayarlar</button>
+    <button id="navProfile">👤 Profil</button>
+    <button id="navMessages">💬 Mesajlar</button>
+    <button id="navUsers">👥 Kullanıcılar</button>
+    <button id="navSettings">⚙️ Ayarlar</button>
     <button id="logoutBtn" style="margin-top:20px; background:#ff4444;">Çıkış Yap</button>
   </nav>
 </div>
@@ -197,25 +191,25 @@
     <div class="mini-text" id="showLogin">Zaten üyeyim, giriş yap</div>
   </form>
 
-  <!-- Profil Bölümü -->
+  <!-- Profil -->
   <section id="profileSection" style="display:none;">
     <h2>Profil</h2>
     <p>Hoşgeldin, <span id="profileUsername"></span>!</p>
   </section>
 
-  <!-- Mesajlar Bölümü -->
+  <!-- Mesajlar -->
   <section id="messagesSection" style="display:none;">
     <h2>Mesajlar</h2>
     <p>Mesajlaşma sistemi henüz aktif değil.</p>
   </section>
 
-  <!-- Kullanıcılar Bölümü -->
+  <!-- Kullanıcılar -->
   <section id="usersSection" style="display:none;">
     <h2>Kullanıcılar</h2>
     <p>Kullanıcı listesi henüz aktif değil.</p>
   </section>
 
-  <!-- Ayarlar Bölümü -->
+  <!-- Ayarlar -->
   <section id="settingsSection" style="display:none;">
     <h2>Ayarlar</h2>
     <p>Karanlık Mod: <button id="darkModeToggle">Değiştir</button></p>
@@ -223,8 +217,94 @@
 </main>
 
 <script>
-  // Sayfa elemanları
+  // Elements
   const menuBtn = document.getElementById('menuBtn');
   const sideMenu = document.getElementById('sideMenu');
   const welcomeText = document.getElementById('welcomeText');
-  const loginForm = document.get
+
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+
+  const showRegister = document.getElementById('showRegister');
+  const showLogin = document.getElementById('showLogin');
+
+  const loginError = document.getElementById('loginError');
+  const registerError = document.getElementById('registerError');
+
+  const profileSection = document.getElementById('profileSection');
+  const messagesSection = document.getElementById('messagesSection');
+  const usersSection = document.getElementById('usersSection');
+  const settingsSection = document.getElementById('settingsSection');
+
+  const navProfile = document.getElementById('navProfile');
+  const navMessages = document.getElementById('navMessages');
+  const navUsers = document.getElementById('navUsers');
+  const navSettings = document.getElementById('navSettings');
+
+  const logoutBtn = document.getElementById('logoutBtn');
+  const darkModeToggle = document.getElementById('darkModeToggle');
+
+  let loggedInUser = null;
+
+  // Menü butonu aç/kapa
+  menuBtn.addEventListener('click', () => {
+    sideMenu.classList.toggle('open');
+    document.body.classList.toggle('menu-open');
+  });
+
+  // Formlar arası geçiş
+  showRegister.addEventListener('click', () => {
+    loginForm.style.display = 'none';
+    registerForm.style.display = 'block';
+    loginError.style.display = 'none';
+    registerError.style.display = 'none';
+  });
+
+  showLogin.addEventListener('click', () => {
+    registerForm.style.display = 'none';
+    loginForm.style.display = 'block';
+    loginError.style.display = 'none';
+    registerError.style.display = 'none';
+  });
+
+  // Basit kullanıcı verisi (sadece tarayıcıda)
+  const users = [];
+
+  // Kayıt işlemi
+  registerForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = document.getElementById('registerUsername').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value;
+
+    if(users.find(u => u.email === email)){
+      registerError.textContent = "Bu e-posta zaten kayıtlı.";
+      registerError.style.display = 'block';
+      return;
+    }
+
+    users.push({username, email, password});
+    registerError.style.display = 'none';
+    alert("Kayıt başarılı! Giriş yapabilirsiniz.");
+    showLogin.click();
+  });
+
+  // Giriş işlemi
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    const user = users.find(u => u.email === email && u.password === password);
+    if(!user){
+      loginError.textContent = "Hatalı e-posta veya şifre.";
+      loginError.style.display = 'block';
+      return;
+    }
+
+    loginError.style.display = 'none';
+    loggedInUser = user;
+    loginForm.style.display = 'none';
+    registerForm.style.display = 'none';
+    welcomeText.textContent = "Hoşgeldin, " + loggedInUser.username;
+    menuBtn.style.display
