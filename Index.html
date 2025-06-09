@@ -1,284 +1,302 @@
-<!DOCTYPE html>
+h<!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ElevenGalaxy™</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: white;
-            color: black;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .dark-mode {
-            background-color: #121212;
-            color: white;
-        }
-        header {
-            padding: 1em;
-            font-size: 2em;
-            text-align: center;
-            background-color: #444;
-            color: white;
-        }
-        .container {
-            padding: 20px;
-        }
-        .hidden {
-            display: none;
-        }
-        #menu-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 2em;
-            cursor: pointer;
-            display: none;
-        }
-        .menu {
-            background: #ddd;
-            padding: 10px;
-            display: none;
-            position: absolute;
-            top: 50px;
-            left: 10px;
-            width: 200px;
-        }
-        .menu a {
-            display: block;
-            padding: 8px;
-            text-decoration: none;
-            color: black;
-        }
-        .menu a:hover {
-            background: #bbb;
-        }
-        .tab-btns button {
-            margin: 5px;
-            padding: 8px 12px;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ElevenGalaxy TM</title>
+<style>
+  /* Basit CSS, karanlık mod için */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0; padding: 0;
+    background: #fff; color: #222;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  body.dark {
+    background: #121212;
+    color: #eee;
+  }
+  header {
+    background: #6200ee;
+    color: white;
+    padding: 1rem;
+    position: sticky; top: 0; z-index: 1000;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  header h1 {
+    margin: 0; font-size: 1.5rem;
+    user-select: none;
+  }
+  main {
+    padding: 1rem;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  input, button {
+    font-size: 1rem;
+    padding: 0.5rem;
+    margin: 0.25rem 0;
+  }
+  input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  button {
+    cursor: pointer;
+    background: #6200ee;
+    border: none;
+    color: white;
+    border-radius: 4px;
+  }
+  button:disabled {
+    background: #999;
+    cursor: default;
+  }
+  .hidden {
+    display: none;
+  }
+  nav {
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    width: 250px;
+    background: #3700b3;
+    color: white;
+    padding: 1rem;
+    transform: translateX(-260px);
+    transition: transform 0.3s ease;
+  }
+  nav.show {
+    transform: translateX(0);
+  }
+  nav h3 {
+    margin-top: 0;
+  }
+  nav ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  nav li {
+    margin: 1rem 0;
+  }
+  .burger {
+    font-size: 2rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .message-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    margin: 1rem 0;
+    background: #f9f9f9;
+    border-radius: 6px;
+  }
+  body.dark .message-list {
+    background: #222;
+    border-color: #444;
+  }
+  .message {
+    border-bottom: 1px solid #ddd;
+    padding: 0.25rem 0;
+  }
+  body.dark .message {
+    border-color: #555;
+  }
+  .leaderboard {
+    margin-top: 1rem;
+    border-top: 2px solid #6200ee;
+    padding-top: 1rem;
+  }
+  .leaderboard h3 {
+    margin-top: 0;
+  }
+  .user-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    margin-top: 1rem;
+    border-radius: 6px;
+    background: #fafafa;
+  }
+  body.dark .user-list {
+    background: #222;
+    border-color: #444;
+  }
+  .user-item {
+    display: flex;
+    align-items: center;
+    margin: 0.25rem 0;
+  }
+  .user-item img {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+  }
+  .role {
+    font-size: 0.75rem;
+    margin-left: auto;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    background: #bbb;
+    color: #222;
+  }
+  .role.admin { background: #d32f2f; color: white; }
+  .role.worker { background: #1976d2; color: white; }
+  .role.viewer { background: #666; color: white; }
+</style>
 </head>
 <body>
-    <header>
-        ElevenGalaxy™
-    </header>
+<header>
+  <h1>ElevenGalaxy™</h1>
+  <div id="burger" class="burger hidden">&#9776;</div>
+</header>
 
-    <div id="menu-btn">☰</div>
-    <div class="menu" id="side-menu">
-        <a href="#" onclick="showSection('chat')">Mesajlaşma</a>
-        <a href="#" onclick="showSection('leaderboard')">En çok konuşanlar</a>
-        <a href="#" onclick="showSection('users')">Kaydolanlar</a>
-        <a href="#" onclick="showSection('settings')">Ayarlar</a>
-        <a href="#" onclick="logout()">Çıkış Yap</a>
+<nav id="sideNav">
+  <h3>Menü</h3>
+  <ul>
+    <li><button id="logoutBtn">Çıkış Yap</button></li>
+    <li><button id="showUsersBtn">Kayıtlı Kullanıcılar</button></li>
+    <li><button id="showLeaderboardBtn">En Çok Mesaj Atanlar</button></li>
+    <li><button id="settingsBtn">Ayarlar</button></li>
+  </ul>
+</nav>
+
+<main>
+  <section id="authSection">
+    <div id="loginForm">
+      <h2>Giriş Yap</h2>
+      <input type="email" id="loginEmail" placeholder="E-posta" required />
+      <input type="password" id="loginPassword" placeholder="Şifre" required />
+      <button id="loginBtn">Giriş Yap</button>
+      <p>Hesabınız yok mu? <button id="showRegisterBtn">Kayıt Ol</button></p>
+      <p><button id="forgotPassBtn">Şifremi Unuttum</button></p>
     </div>
-
-    <div class="container">
-        <div class="tab-btns">
-            <button onclick="showAuthTab('login')">Giriş Yap</button>
-            <button onclick="showAuthTab('register')">Kayıt Ol</button>
-        </div>
-
-        <div id="login-tab">
-            <h2>Giriş Yap</h2>
-            <input type="email" id="login-email" placeholder="Email" /><br />
-            <input type="password" id="login-password" placeholder="Şifre" /><br />
-            <button onclick="login()">Giriş Yap</button><br />
-            <a href="#" onclick="resetPassword()">Şifremi unuttum</a>
-        </div>
-
-        <div id="register-tab" class="hidden">
-            <h2>Kayıt Ol</h2>
-            <input type="text" id="register-username" placeholder="Kullanıcı Adı" /><br />
-            <input type="email" id="register-email" placeholder="Email" /><br />
-            <input type="password" id="register-password" placeholder="Şifre" /><br />
-            <button onclick="register()">Kayıt Ol</button>
-        </div>
-
-        <div id="welcome-section" class="hidden">
-            <h2>Hoş geldin, <span id="user-email"></span>!</h2>
-        </div>
-
-        <div id="chat" class="hidden">
-            <h3>Mesajlaşma (yakında)</h3>
-        </div>
-
-        <div id="leaderboard" class="hidden">
-            <h3>En çok konuşanlar</h3>
-            <ol>
-                <li>Kullanıcı1 - 120 mesaj</li>
-                <li>Kullanıcı2 - 98 mesaj</li>
-                <li>Kullanıcı3 - 75 mesaj</li>
-            </ol>
-        </div>
-
-        <div id="users" class="hidden">
-            <h3>Kaydolanlar</h3>
-            <ul id="user-list"></ul>
-        </div>
-
-        <div id="settings" class="hidden">
-            <h3>Ayarlar</h3>
-            <label>Profil Fotoğrafı:</label>
-            <input type="file" id="profile-pic" /><br /><br />
-            <button onclick="uploadProfilePic()">Yükle</button><br /><br />
-
-            <button onclick="toggleDarkMode()">Karanlık Modu Aç/Kapat</button><br /><br />
-
-            <label>Açıklama:</label><br />
-            <textarea id="user-desc" rows="4" cols="30"></textarea><br />
-            <button onclick="saveDescription()">Kaydet</button>
-        </div>
+    <div id="registerForm" class="hidden">
+      <h2>Kayıt Ol</h2>
+      <input type="text" id="registerUsername" placeholder="Kullanıcı Adı" required />
+      <input type="email" id="registerEmail" placeholder="E-posta" required />
+      <input type="password" id="registerPassword" placeholder="Şifre" required />
+      <input type="password" id="registerPasswordConfirm" placeholder="Şifre Tekrar" required />
+      <button id="registerBtn">Kayıt Ol</button>
+      <p><button id="showLoginBtn">Zaten Hesabım Var</button></p>
     </div>
+    <div id="forgotPassForm" class="hidden">
+      <h2>Şifre Sıfırlama</h2>
+      <input type="email" id="forgotPassEmail" placeholder="E-posta" required />
+      <button id="forgotPassSendBtn">Şifre Sıfırlama E-postası Gönder</button>
+      <p><button id="showLoginFromForgotBtn">Giriş Ekranına Dön</button></p>
+    </div>
+  </section>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-storage.js";
+  <section id="chatSection" class="hidden">
+    <div style="display:flex; align-items:center; justify-content: space-between;">
+      <h2>Mesajlar</h2>
+      <button id="darkModeToggle">Karanlık Mod</button>
+    </div>
+    <div class="message-list" id="messages"></div>
+    <input type="text" id="messageInput" placeholder="Mesajınızı yazın..." />
+    <button id="sendMessageBtn" disabled>Gönder</button>
+  </section>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
-            authDomain: "elevengalaxy-4ab1f.firebaseapp.com",
-            projectId: "elevengalaxy-4ab1f",
-            storageBucket: "elevengalaxy-4ab1f.appspot.com",
-            messagingSenderId: "441555249711",
-            appId: "1:441555249711:web:409b2320283d5fe46134da",
-            measurementId: "G-2MEFN03TH0"
-        };
+  <section id="usersSection" class="hidden">
+    <h2>Kayıtlı Kullanıcılar</h2>
+    <div class="user-list" id="userList"></div>
+  </section>
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const storage = getStorage(app);
+  <section id="leaderboardSection" class="hidden">
+    <h2>En Çok Mesaj Atanlar</h2>
+    <div class="user-list" id="leaderboardList"></div>
+  </section>
 
-        const menuBtn = document.getElementById('menu-btn');
-        const sideMenu = document.getElementById('side-menu');
+  <section id="settingsSection" class="hidden">
+    <h2>Ayarlar</h2>
+    <label>
+      Profil Fotoğrafı Yükle: <input type="file" id="profilePicInput" accept="image/*" />
+    </label>
+    <br />
+    <button id="saveProfilePicBtn" disabled>Kaydet</button>
+    <br /><br />
+    <label>
+      <input type="checkbox" id="darkModeCheckbox" /> Karanlık Mod
+    </label>
+    <br /><br />
+    <label>
+      Bildirimler
+      <select id="notificationsSelect">
+        <option value="all">Tüm Bildirimler</option>
+        <option value="mentions">Sadece Bahsetmeler</option>
+        <option value="none">Bildirimleri Kapat</option>
+      </select>
+    </label>
+    <br /><br />
+    <label>
+      Açıklama:
+      <textarea id="profileDescription" rows="3" placeholder="Kendinizden bahsedin..."></textarea>
+    </label>
+    <br />
+    <button id="saveSettingsBtn">Ayarları Kaydet</button>
+  </section>
+</main>
 
-        menuBtn.addEventListener('click', () => {
-            sideMenu.style.display = sideMenu.style.display === 'block' ? 'none' : 'block';
-        });
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail,
+    onAuthStateChanged,
+    signOut,
+    updateProfile,
+  } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+    collection,
+    query,
+    where,
+    onSnapshot,
+    addDoc,
+    orderBy,
+    limit,
+    updateDoc,
+    serverTimestamp,
+    getDocs,
+  } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
+  import {
+    getStorage,
+    ref,
+    uploadBytes,
+    getDownloadURL,
+  } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-storage.js";
 
-        function showAuthTab(tab) {
-            if (tab === 'login') {
-                document.getElementById('login-tab').classList.remove('hidden');
-                document.getElementById('register-tab').classList.add('hidden');
-            } else {
-                document.getElementById('login-tab').classList.add('hidden');
-                document.getElementById('register-tab').classList.remove('hidden');
-            }
-        }
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
+    authDomain: "elevengalaxy-web.firebaseapp.com",
+    projectId: "elevengalaxy-web",
+    storageBucket: "elevengalaxy-web.firebasestorage.app",
+    messagingSenderId: "1044606246550",
+    appId: "1:1044606246550:web:ba8d2759baa146f59f2cb7",
+    measurementId: "G-V4M47VJ409",
+  };
 
-        async function register() {
-            const username = document.getElementById('register-username').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-                await setDoc(doc(db, 'users', user.uid), {
-                    username: username,
-                    email: email,
-                    description: '',
-                    profilePic: ''
-                });
-                alert('Kayıt başarılı!');
-            } catch (error) {
-                alert(error.message);
-            }
-        }
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
 
-        async function login() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-            } catch (error) {
-                alert(error.message);
-            }
-        }
-
-        async function logout() {
-            await signOut(auth);
-        }
-
-        async function resetPassword() {
-            const email = prompt('Şifre sıfırlama için email adresinizi girin:');
-            if (email) {
-                try {
-                    await sendPasswordResetEmail(auth, email);
-                    alert('Şifre sıfırlama maili gönderildi!');
-                } catch (error) {
-                    alert(error.message);
-                }
-            }
-        }
-
-        onAuthStateChanged(auth, async user => {
-            if (user) {
-                document.getElementById('login-tab').classList.add('hidden');
-                document.getElementById('register-tab').classList.add('hidden');
-                document.querySelector('.tab-btns').classList.add('hidden');
-                document.getElementById('welcome-section').classList.remove('hidden');
-                document.getElementById('user-email').textContent = user.email;
-                menuBtn.style.display = 'block';
-                await loadUsers();
-            } else {
-                document.getElementById('login-tab').classList.remove('hidden');
-                document.getElementById('register-tab').classList.add('hidden');
-                document.querySelector('.tab-btns').classList.remove('hidden');
-                document.getElementById('welcome-section').classList.add('hidden');
-                menuBtn.style.display = 'none';
-                sideMenu.style.display = 'none';
-            }
-        });
-
-        async function loadUsers() {
-            const querySnapshot = await getDocs(collection(db, 'users'));
-            const userList = document.getElementById('user-list');
-            userList.innerHTML = '';
-            querySnapshot.forEach(doc => {
-                const data = doc.data();
-                const li = document.createElement('li');
-                li.textContent = `${data.username} (${data.email})`;
-                userList.appendChild(li);
-            });
-        }
-
-        async function uploadProfilePic() {
-            const file = document.getElementById('profile-pic').files[0];
-            if (!file) {
-                alert('Lütfen bir dosya seçin.');
-                return;
-            }
-            const user = auth.currentUser;
-            const storageRef = ref(storage, `profilePics/${user.uid}`);
-            await uploadBytes(storageRef, file);
-            alert('Profil fotoğrafı yüklendi!');
-        }
-
-        async function saveDescription() {
-            const desc = document.getElementById('user-desc').value;
-            const user = auth.currentUser;
-            const userDoc = doc(db, 'users', user.uid);
-            await setDoc(userDoc, { description: desc }, { merge: true });
-            alert('Açıklama kaydedildi!');
-        }
-
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-        }
-
-        function showSection(sectionId) {
-            document.querySelectorAll('.container > div').forEach(div => {
-                if (div.id !== 'welcome-section' && div.id !== 'login-tab' && div.id !== 'register-tab' && div.className !== 'tab-btns') {
-                    div.classList.add('hidden');
-                }
-            });
-            document.getElementById(sectionId).classList.remove('hidden');
-        }
-    </script>
-</body>
-</html>
+  // UI Elements
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+  const forgotPassForm = document.getElementById("forgotPassForm");
+  const authSection = document.getElementById("authSection");
+  const chatSection = document.getElementById("chatSection");
+  const usersSection = document.getElementById("usersSection");
+  const leaderboardSection = document.getElementById
