@@ -1,240 +1,261 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ElevenGalaxy 🌌</title>
-<style>
-  @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
-
-  body {
-    margin: 0; padding: 0; font-family: Arial, sans-serif;
-    background-color: #f0f0f0; color: #222;
-    transition: background-color 0.5s, color 0.5s;
-  }
-  .dark-mode {
-    background-color: #121212; color: #eee;
-  }
-  h1, h2, h3 {
-    margin: 0 0 10px 0;
-  }
-  #header {
-    padding: 10px 20px;
-    background-color: #222;
-    color: #eee;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  #header.dark-mode {
-    background-color: #111;
-  }
-  #menuButton {
-    font-size: 28px;
-    cursor: pointer;
-    user-select: none;
-    color: #eee;
-    display: none;
-  }
-  #darkModeToggle {
-    background: none;
-    border: 1px solid #eee;
-    border-radius: 5px;
-    color: #eee;
-    padding: 5px 10px;
-    cursor: pointer;
-    user-select: none;
-  }
-  #authSection, #welcomeSection {
-    padding: 20px;
-  }
-  input[type="email"], input[type="password"], textarea {
-    width: 100%;
-    padding: 8px;
-    margin: 6px 0 12px 0;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-  }
-  textarea {
-    resize: vertical;
-  }
-  button {
-    background-color: #222;
-    color: #eee;
-    border: none;
-    padding: 10px 16px;
-    font-size: 15px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-  }
-  button:hover {
-    background-color: #444;
-  }
-  .error {
-    color: #f33;
-    font-weight: bold;
-    margin-top: 10px;
-  }
-  .success {
-    color: #3a3;
-    font-weight: bold;
-    margin-top: 10px;
-  }
-
-  /* Side menu style */
-  #sideMenu {
-    position: fixed;
-    top: 0; left: 0;
-    height: 100vh;
-    width: 240px;
-    max-width: 80vw;
-    background-color: #222;
-    color: #eee;
-    box-shadow: 3px 0 10px rgba(0,0,0,0.5);
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    padding-top: 60px;
-    overflow-y: auto;
-    z-index: 1000;
-  }
-  #sideMenu.dark-mode {
-    background-color: #111;
-  }
-  #sideMenu.visible {
-    transform: translateX(0);
-  }
-  #sideMenu h3 {
-    font-size: 14px;
-    margin: 15px 20px 5px 20px;
-    border-bottom: 1px solid #444;
-    padding-bottom: 5px;
-  }
-  #sideMenu ul, #registeredUsers {
-    list-style: none;
-    padding-left: 0;
-    margin: 0 10px 10px 10px;
-    max-height: 150px;
-    overflow-y: auto;
-  }
-  #sideMenu ul li, #registeredUsers div {
-    display: flex;
-    align-items: center;
-    font-size: 13px;
-    padding: 6px 8px;
-    border-radius: 4px;
-    cursor: default;
-    background-color: #333;
-    margin-bottom: 6px;
-    user-select: none;
-  }
-  #sideMenu ul li:hover, #registeredUsers div:hover {
-    background-color: #444;
-  }
-  .profile-img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 10px;
-    border: 1px solid #555;
-  }
-  /* Icon + label container */
-  .menu-item {
-    display: flex;
-    align-items: center;
-    padding: 8px 20px;
-    font-size: 14px;
-    cursor: pointer;
-    border-bottom: 1px solid #333;
-    user-select: none;
-  }
-  .menu-item i {
-    margin-right: 12px;
-    min-width: 20px;
-    text-align: center;
-  }
-  .menu-item:hover {
-    background-color: #444;
-  }
-
-  /* Message input & send */
-  #messageInput {
-    width: calc(100% - 50px);
-    height: 60px;
-    margin-right: 10px;
-    resize: vertical;
-  }
-  #messageRow {
-    display: flex;
-    margin: 0 20px 20px 20px;
-    align-items: center;
-  }
-
-  /* Loading spinner */
-  #loadingSpinner {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    display: none;
-    z-index: 2000;
-  }
-  .spinner {
-    border: 5px solid #ccc;
-    border-top: 5px solid #222;
-    border-radius: 50%;
-    width: 40px; height: 40px;
-    animation: spin 1s linear infinite;
-  }
-  .dark-mode .spinner {
-    border: 5px solid #555;
-    border-top: 5px solid #eee;
-  }
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ElevenGalaxy 🌌</title>
+  <style>
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+    body{margin:0;padding:0;font-family:Arial,sans-serif;transition:background 0.5s,color 0.5s}
+    body.light{background:#f0f0f0;color:#222}
+    body.dark{background:#121212;color:#eee}
+    #header{background:#222;color:#eee;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
+    #menuBtn{font-size:28px;cursor:pointer;display:none}
+    #darkBtn{background:none;border:1px solid #eee;border-radius:5px;color:#eee;padding:5px 10px;cursor:pointer}
+    #auth,#welcome{padding:20px}
+    input,textarea{width:100%;padding:8px;margin:6px 0;border-radius:4px;border:1px solid #ccc;font-size:14px;box-sizing:border-box}
+    textarea{resize:vertical}
+    button{background:#222;color:#eee;padding:10px;border:none;border-radius:5px;font-size:15px;cursor:pointer;transition:background 0.3s}
+    button:hover{background:#444}
+    .msg-list,.user-list{max-height:150px;overflow-y:auto;padding:10px;margin:10px;border:1px solid #ccc;border-radius:4px;background:#fafafa}
+    .dark .msg-list,.dark .user-list{background:#222;border-color:#444}
+    .menu{position:fixed;top:0;left:0;height:100vh;width:240px;max-width:80vw;background:#222;color:#eee;transform:translateX(-100%);transition:transform 0.3s;z-index:1000;padding-top:60px;overflow:auto}
+    .dark .menu{background:#111}
+    .menu.visible{transform:translateX(0)}
+    .menu-item{display:flex;align-items:center;padding:10px 20px;cursor:pointer;border-bottom:1px solid #333}
+    .menu-item:hover{background:#444}
+    .menu-item i{margin-right:12px;width:20px;text-align:center}
+    #loading{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);display:none;z-index:2000}
+    .spinner{border:5px solid #ccc;border-top:5px solid #222;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite}
+    .dark .spinner{border:5px solid #555;border-top:5px solid #eee}
+    @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+    .error{color:#f33;font-weight:bold;margin:10px 0}
+    .success{color:#3a3;font-weight:bold;margin:10px 0}
+    .profile-img{width:30px;height:30px;border-radius:50%;margin-right:10px;object-fit:cover;border:1px solid #555}
+    #leaderboardList li{padding:5px 0;font-size:14px}
+    #messagesList li{padding:5px 0;font-size:14px}
+  </style>
 </head>
-<body>
-
-  <div id="header" class="">
-    <div id="menuButton" title="Menüyü aç/kapat">☰</div>
-    <h1 style="flex-grow:1; font-size:20px; margin-left:10px;">ElevenGalaxy™</h1>
-    <button id="darkModeToggle" title="Karanlık mod aç/kapat"><i class="fa-solid fa-moon"></i></button>
+<body class="light">
+  <div id="header">
+    <div id="menuBtn">☰</div>
+    <h1 style="flex:1;margin:0;font-size:20px;padding-left:10px">ElevenGalaxy™</h1>
+    <button id="darkBtn" title="Karanlık mod"><i class="fa-solid fa-moon"></i></button>
   </div>
 
-  <div id="authSection">
-    <h2 style="font-size:18px;">Giriş Yap</h2>
-    <input type="email" id="loginEmail" placeholder="Email" autocomplete="username"/>
-    <input type="password" id="loginPassword" placeholder="Şifre" autocomplete="current-password"/>
-    <button id="loginButton"><i class="fa-solid fa-right-to-bracket"></i> Giriş</button>
-
-    <h2 style="font-size:18px; margin-top:30px;">Kayıt Ol</h2>
-    <input type="email" id="registerEmail" placeholder="Email" autocomplete="username"/>
-    <input type="password" id="registerPassword" placeholder="Şifre" autocomplete="new-password"/>
-    <button id="registerButton"><i class="fa-solid fa-user-plus"></i> Kayıt</button>
-
-    <div id="errorMessage" class="error"></div>
-    <div id="successMessage" class="success"></div>
+  <div id="auth">
+    <h2 style="font-size:18px">Giriş</h2>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Şifre">
+    <button id="loginBtn"><i class="fa-solid fa-right-to-bracket"></i> Giriş</button>
+    <h2 style="font-size:18px;margin-top:20px">Kayıt</h2>
+    <input type="email" id="regEmail" placeholder="Email">
+    <input type="password" id="regPassword" placeholder="Şifre">
+    <button id="regBtn"><i class="fa-solid fa-user-plus"></i> Kayıt</button>
+    <div id="msgErr" class="error"></div>
+    <div id="msgSuc" class="success"></div>
   </div>
 
-  <div id="welcomeSection" style="display:none; padding: 20px;">
-    <h2 style="font-size:18px;">Hoş geldin, <span id="welcomeName"></span>!</h2>
+  <div id="welcome" style="display:none;padding:20px">
+    <h2 style="font-size:18px">Hoş geldin, <span id="welcomeName"></span>!</h2>
   </div>
 
-  <!-- Side menu -->
-  <nav id="sideMenu" aria-label="Yan Menü">
-    <div class="menu-item" id="menuMessages"><i class="fa-solid fa-comments"></i> Mesajlar</div>
-    <div class="menu-item" id="menuLeaderboard"><i class="fa-solid fa-trophy"></i> Liderlik</div>
-    <div class="menu-item" id="menuUsers"><i class="fa-solid fa-users"></i> Kayd.</div>
-    <div class="menu-item" id="menuSettings"><i class="fa-solid fa-gear"></i> Ayarlar</div>
+  <nav id="menu" class="menu">
+    <div class="menu-item" id="mMsgs"><i class="fa-solid fa-comments"></i> Mesajlar</div>
+    <div class="menu-item" id="mLead"><i class="fa-solid fa-trophy"></i> Liderlik</div>
+    <div class="menu-item" id="mUsers"><i class="fa-solid fa-users"></i> Kullanıcılar</div>
+    <div class="menu-item" id="mSettings"><i class="fa-solid fa-gear"></i> Ayarlar</div>
 
-    <div id="contentMessages" style="display:none; padding: 10px;">
-      <div id="messageRow">
-        <textarea id="messageInput" placeholder="Mesajını yaz..."></textarea>
-        <button id="sendMessageButton" title="Mesaj gönder"><i class="fa-solid fa-paper-plane"></i></button>
+    <div id="cMsgs" style="display:none;padding:10px">
+      <div style="display:flex;align-items:center;margin:10px">
+        <textarea id="messageInput" placeholder="Mesaj yaz..." style="flex:1"></textarea>
+        <button id="sendMsg" title="Gönder"><i class="fa-solid fa-paper-plane"></i></button>
       </div>
-      <ul
+      <ul id="messagesList" class="msg-list"></ul>
+    </div>
+
+    <div id="cLead" style="display:none;padding:10px">
+      <ul id="leaderboardList" class="msg-list"></ul>
+    </div>
+
+    <div id="cUsers" style="display:none;padding:10px">
+      <div id="registeredUsers" class="user-list"></div>
+    </div>
+
+    <div id="cSettings" style="display:none;padding:10px">
+      <label>Profil resim:<br><input type="file" id="profFile"></label><br><br>
+      <button id="logoutBtn" style="background:#a33"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</button>
+    </div>
+  </nav>
+
+  <div id="loading"><div class="spinner"></div></div>
+
+  <!-- Firebase + JS -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script>
+    // Firebase config
+    const cfg = {
+      apiKey:"AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
+      authDomain:"elevengalaxy-web.firebaseapp.com",
+      databaseURL:"https://elevengalaxy-web-default-rtdb.firebaseio.com",
+      storageBucket:"elevengalaxy-web.appspot.com",
+      projectId:"elevengalaxy-web",
+      messagingSenderId:"1044606246550",
+      appId:"1:1044606246550:web:ba8d2759baa146f59f2cb7"
+    };
+    firebase.initializeApp(cfg);
+    const auth = firebase.auth();
+    const db = firebase.database();
+    const st = firebase.storage();
+
+    // Elemanlar
+    const menuBtn=document.getElementById("menuBtn"),
+      darkBtn=document.getElementById("darkBtn"),
+      authSec=document.getElementById("auth"),
+      welcome=document.getElementById("welcome"),
+      loginBtn=document.getElementById("loginBtn"),
+      regBtn=document.getElementById("regBtn"),
+      msgErr=document.getElementById("msgErr"),
+      msgSuc=document.getElementById("msgSuc"),
+      welcomeName=document.getElementById("welcomeName"),
+      menuNav=document.getElementById("menu"),
+      loading=document.getElementById("loading"),
+      sendMsg=document.getElementById("sendMsg"),
+      msgInput=document.getElementById("messageInput"),
+      msgsList=document.getElementById("messagesList"),
+      leadList=document.getElementById("leaderboardList"),
+      regUsers=document.getElementById("registeredUsers"),
+      profFile=document.getElementById("profFile"),
+      logoutBtn=document.getElementById("logoutBtn");
+    // Bölümler
+    const cMsgs=document.getElementById("cMsgs"),
+      cLead=document.getElementById("cLead"),
+      cUsers=document.getElementById("cUsers"),
+      cSets=document.getElementById("cSettings");
+
+    // Yardımcılar
+    const showLoad=show=>loading.style.display=show?"block":"none";
+    const clearMsgs=_=>{
+      msgErr.innerText="";
+      msgSuc.innerText="";
+    };
+
+    // Giriş
+    loginBtn.onclick=()=>{
+      clearMsgs();showLoad(1);
+      auth.signInWithEmailAndPassword(
+        document.getElementById("loginEmail").value,
+        document.getElementById("loginPassword").value
+      ).catch(e=>msgErr.innerText=e.message)
+      .finally(_=>showLoad(0));
+    };
+    // Kayıt
+    regBtn.onclick=()=>{
+      clearMsgs();showLoad(1);
+      auth.createUserWithEmailAndPassword(
+        document.getElementById("regEmail").value,
+        document.getElementById("regPassword").value
+      ).then(u=>msgSuc.innerText="Kayıt tamam. Giriş yapabilirsiniz.")
+      .catch(e=>msgErr.innerText=e.message)
+      .finally(_=>showLoad(0));
+    };
+
+    // Kullanıcı değişimi
+    auth.onAuthStateChanged(u=>{
+      if(u){
+        authSec.style.display="none";
+        welcome.style.display="block";
+        welcomeName.innerText=u.email;
+        menuBtn.style.display="block";
+        loadData();
+      } else {
+        authSec.style.display="block";
+        welcome.style.display="none";
+        menuBtn.style.display="none";
+        menuNav.classList.remove("visible");
+      }
+      showLoad(0);
+    });
+
+    // Menü aç/kapat
+    menuBtn.onclick=_=>{
+      menuNav.classList.toggle("visible");
+      hideAll();
+    };
+
+    // Menü seçenekleri
+    document.getElementById("mMsgs").onclick=_=>{
+      hideAll(); cMsgs.style.display="block"; loadMessages();
+    };
+    document.getElementById("mLead").onclick=_=>{
+      hideAll(); cLead.style.display="block"; loadLeaderboard();
+    };
+    document.getElementById("mUsers").onclick=_=>{
+      hideAll(); cUsers.style.display="block"; loadUsers();
+    };
+    document.getElementById("mSettings").onclick=_=>{
+      hideAll(); cSets.style.display="block";
+    };
+    logoutBtn.onclick=_=>auth.signOut();
+
+    // Karanlık mod
+    darkBtn.onclick=_=>document.body.classList.toggle("dark");
+
+    // Mesaj gönder
+    sendMsg.onclick=_=>{
+      const txt=msgInput.value.trim();
+      if(!txt)return;
+      showLoad(1);
+      const uid=auth.currentUser.uid;
+      db.ref("messages").push({uid,txt,ts:Date.now()})
+      .finally(_=>{ msgInput.value=""; showLoad(0)});
+    };
+
+    // Yükleme veri
+    function loadMessages(){
+      msgsList.innerHTML="";
+      db.ref("messages").on("value",snap=>{
+        msgsList.innerHTML="";
+        const data=snap.val()||{};
+        Object.values(data).sort((a,b)=>a.ts-b.ts)
+        .forEach(o=>{
+          const li=document.createElement("li");
+          li.textContent=`${o.txt}`;
+          msgsList.appendChild(li);
+        })
+      });
+    }
+
+    function loadLeaderboard(){
+      leadList.innerHTML="";
+      db.ref("messages").once("value",snap=>{
+        const cnt = {};
+        Object.values(snap.val()||{}).forEach(m=>{
+          cnt[m.uid]=(cnt[m.uid]||0)+1;
+        });
+        const arr=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
+        arr.forEach(([uid,c],i)=>{
+          const li=document.createElement("li");
+          li.textContent=`${i+1}. ${uid.substring(0,6)} — ${c} msg`;
+          leadList.appendChild(li);
+        })
+      });
+    }
+
+    function loadUsers(){
+      regUsers.innerHTML="";
+      auth.database?db.ref("users"):null;
+      // basit: tarayıcı USERS karena
+    }
+
+    function loadData(){
+      showLoad(1);
+      db.ref("messages").once("value").finally(_=>showLoad(0));
+    }
+
+  </script>
+</body>
+</html>
