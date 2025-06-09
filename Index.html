@@ -162,9 +162,10 @@
 
   /* Message input & send */
   #messageInput {
-    width: calc(100% - 80px);
+    width: calc(100% - 50px);
     height: 60px;
     margin-right: 10px;
+    resize: vertical;
   }
   #messageRow {
     display: flex;
@@ -172,25 +173,48 @@
     align-items: center;
   }
 
+  /* Loading spinner */
+  #loadingSpinner {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    z-index: 2000;
+  }
+  .spinner {
+    border: 5px solid #ccc;
+    border-top: 5px solid #222;
+    border-radius: 50%;
+    width: 40px; height: 40px;
+    animation: spin 1s linear infinite;
+  }
+  .dark-mode .spinner {
+    border: 5px solid #555;
+    border-top: 5px solid #eee;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 </style>
 </head>
 <body>
 
   <div id="header" class="">
-    <div id="menuButton">☰</div>
+    <div id="menuButton" title="Menüyü aç/kapat">☰</div>
     <h1 style="flex-grow:1; font-size:20px; margin-left:10px;">ElevenGalaxy™</h1>
     <button id="darkModeToggle" title="Karanlık mod aç/kapat"><i class="fa-solid fa-moon"></i></button>
   </div>
 
   <div id="authSection">
     <h2 style="font-size:18px;">Giriş Yap</h2>
-    <input type="email" id="loginEmail" placeholder="Email" />
-    <input type="password" id="loginPassword" placeholder="Şifre" />
+    <input type="email" id="loginEmail" placeholder="Email" autocomplete="username"/>
+    <input type="password" id="loginPassword" placeholder="Şifre" autocomplete="current-password"/>
     <button id="loginButton"><i class="fa-solid fa-right-to-bracket"></i> Giriş</button>
 
     <h2 style="font-size:18px; margin-top:30px;">Kayıt Ol</h2>
-    <input type="email" id="registerEmail" placeholder="Email" />
-    <input type="password" id="registerPassword" placeholder="Şifre" />
+    <input type="email" id="registerEmail" placeholder="Email" autocomplete="username"/>
+    <input type="password" id="registerPassword" placeholder="Şifre" autocomplete="new-password"/>
     <button id="registerButton"><i class="fa-solid fa-user-plus"></i> Kayıt</button>
 
     <div id="errorMessage" class="error"></div>
@@ -205,7 +229,7 @@
   <nav id="sideMenu" aria-label="Yan Menü">
     <div class="menu-item" id="menuMessages"><i class="fa-solid fa-comments"></i> Mesajlar</div>
     <div class="menu-item" id="menuLeaderboard"><i class="fa-solid fa-trophy"></i> Liderlik</div>
-    <div class="menu-item" id="menuUsers"><i class="fa-solid fa-users"></i> Kaydolanlar</div>
+    <div class="menu-item" id="menuUsers"><i class="fa-solid fa-users"></i> Kayd.</div>
     <div class="menu-item" id="menuSettings"><i class="fa-solid fa-gear"></i> Ayarlar</div>
 
     <div id="contentMessages" style="display:none; padding: 10px;">
@@ -213,20 +237,4 @@
         <textarea id="messageInput" placeholder="Mesajını yaz..."></textarea>
         <button id="sendMessageButton" title="Mesaj gönder"><i class="fa-solid fa-paper-plane"></i></button>
       </div>
-      <ul id="messagesList"></ul>
-    </div>
-
-    <div id="contentLeaderboard" style="display:none; padding: 10px;">
-      <ul id="leaderboardList"></ul>
-    </div>
-
-    <div id="contentUsers" style="display:none; padding: 10px;">
-      <div id="registeredUsers"></div>
-    </div>
-
-    <div id="contentSettings" style="display:none; padding: 10px;">
-      <label>Profil Fotoğrafı Yükle:<br/>
-        <input type="file" id="profilePhotoInput" accept="image/*" />
-      </label>
-      <br/><br/>
-      <button id="logoutButton" style="background:#a33;"><i
+      <ul
