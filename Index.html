@@ -1,178 +1,350 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ElevenGalaxy™ - Prototip 1</title>
-  <style>
-    body { 
-      margin:0; font-family:sans-serif; 
-      background:#f0f0f0; color:#333; 
-      transition: background 0.5s ease, color 0.5s ease; 
-    }
-    .center { max-width:400px; margin:100px auto; padding:20px; text-align:center; background:#fff; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.1); transition: background 0.5s ease, color 0.5s ease; }
-    input, button { width:100%; margin:8px 0; padding:10px; border:1px solid #ccc; border-radius:4px; font-size:16px; }
-    button { cursor:pointer; background:#4CAF50; color:white; transition: background 0.3s ease; }
-    button:hover { background:#45a049; }
-    #menuBtn { position:fixed; top:10px; left:10px; font-size:24px; cursor:pointer; z-index:1001; display:none; }
-    #menuNav { 
-      position:fixed; top:0; left:0; height:100%; width:0; background:#222; 
-      overflow-x:hidden; transition:width 0.3s ease; z-index:1000; padding-top:60px; color:white; 
-    }
-    #menuNav.visible { width:250px; }
-    #menuNav a { padding:8px 32px; text-decoration:none; color:white; display:block; transition: background 0.3s ease; }
-    #menuNav a:hover { background:#575757; }
-    .msgErr { color:red; margin-top:10px; }
-    .msgSuc { color:green; margin-top:10px; }
-    #loading { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:2000; justify-content:center; align-items:center; }
-    .spinner { border:8px solid #f3f3f3; border-top:8px solid #3498db; border-radius:50%; width:60px; height:60px; animation:spin 1s linear infinite; }
-    @keyframes spin { 100% { transform:rotate(360deg); } }
-    .dark-mode { background:#222; color:#eee; }
-    .dark-mode input, .dark-mode button { background:#333; color:white; border-color:#555; }
-    .dark-mode .center { background:#333; color:#eee; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ElevenGalaxy™ Prototip 1.5</title>
+<style>
+  /* --- Temel stil ve karanlık mod geçişi animasyonlu --- */
+  :root {
+    --bg-light: #f5f7fa;
+    --text-light: #222;
+    --bg-dark: #121212;
+    --text-dark: #eee;
+    --primary: #0055ff;
+    --accent: #ff5500;
+    --menu-width: 220px;
+    --transition-speed: 0.4s;
+  }
+  html, body {
+    margin:0; padding:0; height:100%;
+    background: var(--bg-light);
+    color: var(--text-light);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    transition: background var(--transition-speed), color var(--transition-speed);
+    overflow-x: hidden;
+  }
+  body.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+  }
+  a, button {
+    cursor: pointer;
+  }
+  /* --- Header --- */
+  header {
+    height: 56px;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    user-select: none;
+  }
+  header .menu-btn {
+    font-size: 1.6rem;
+    margin-right: 16px;
+    user-select: none;
+  }
+  header .welcome {
+    flex-grow: 1;
+  }
+  /* --- Side menu --- */
+  #sideMenu {
+    position: fixed;
+    top: 56px;
+    left: -var(--menu-width);
+    width: var(--menu-width);
+    height: calc(100% - 56px);
+    background: var(--primary);
+    color: white;
+    transition: left var(--transition-speed);
+    overflow-y: auto;
+    padding-top: 10px;
+    box-sizing: border-box;
+    z-index: 10;
+  }
+  #sideMenu.open {
+    left: 0;
+  }
+  #sideMenu nav button {
+    background: none;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    width: 100%;
+    font-size: 0.9rem;
+    font-weight: 600;
+    user-select: none;
+    transition: background 0.3s;
+    letter-spacing: 0.03em;
+  }
+  #sideMenu nav button:hover {
+    background: var(--accent);
+  }
+  #sideMenu nav button .icon {
+    margin-right: 10px;
+    font-size: 1.3rem;
+    width: 20px;
+    text-align: center;
+  }
+  /* --- Main content --- */
+  main {
+    margin-top: 56px;
+    padding: 16px;
+    transition: margin-left var(--transition-speed);
+  }
+  body.menu-open main {
+    margin-left: var(--menu-width);
+  }
+  /* --- Forms --- */
+  form {
+    max-width: 350px;
+    margin: auto;
+    background: rgba(0,0,0,0.05);
+    padding: 16px;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+  body.dark form {
+    background: rgba(255,255,255,0.1);
+  }
+  input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+  input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+    border-color: var(--primary);
+    outline: none;
+  }
+  button.primary {
+    background: var(--primary);
+    border: none;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-weight: 700;
+    width: 100%;
+    font-size: 1rem;
+    transition: background 0.3s;
+  }
+  button.primary:hover {
+    background: var(--accent);
+  }
+  /* --- Mini yazılar --- */
+  .mini-text {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    user-select: none;
+  }
+  /* --- Loading spinner --- */
+  #loadingSpinner {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 48px;
+    height: 48px;
+    margin: -24px 0 0 -24px;
+    border: 6px solid rgba(0,0,0,0.15);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1000;
+  }
+  body.loading #loadingSpinner {
+    display: block;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  /* --- Error message --- */
+  .error-msg {
+    background: #ff4c4c;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-bottom: 12px;
+    font-weight: 700;
+    user-select: none;
+  }
+  /* --- Profile photo preview --- */
+  #profilePreview {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 8px auto 16px;
+    display: block;
+    border: 2px solid var(--primary);
+  }
+  /* --- User list --- */
+  #userList {
+    max-width: 600px;
+    margin: 0 auto;
+    list-style: none;
+    padding: 0;
+  }
+  #userList li {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  body.dark #userList li {
+    border-color: #444;
+  }
+  #userList img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 1.5px solid var(--primary);
+  }
+  #userList span.username {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  /* --- Messages --- */
+  #messages {
+    max-width: 700px;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    background: white;
+  }
+  body.dark #messages {
+    background: #222;
+    border-color: #555;
+  }
+  #messages .msg {
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+  }
+  #messages .msg strong {
+    color: var(--primary);
+  }
+  /* --- Message input --- */
+  #msgForm {
+    max-width: 700px;
+    margin: 10px auto 40px;
+    display: flex;
+  }
+  #msgInput {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 6px 0 0 6px;
+    border: 1px solid #ccc;
+    border-right: none;
+    box-sizing: border-box;
+  }
+  body.dark #msgInput {
+    background: #333;
+    border-color: #555;
+    color: #eee;
+  }
+  #msgSendBtn {
+    padding: 0 20px;
+    font-weight: 700;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  #msgSendBtn:hover {
+    background: var(--accent);
+  }
+</style>
 </head>
 <body>
+<header>
+  <div id="menuBtn" class="menu-btn" title="Menüyü aç/kapa">☰</div>
+  <div class="welcome" id="welcomeText">ElevenGalaxy™</div>
+</header>
 
-<div id="menuBtn">☰</div>
+<nav id="sideMenu" aria-label="Ana Menü">
+  <nav>
+    <button data-page="messages" class="menu-item" title="Mesajlaşma">
+      <span class="icon">💬</span><span class="mini-text">Mesajlar</span>
+    </button>
+    <button data-page="users" class="menu-item" title="Kaydolanlar">
+      <span class="icon">👥</span><span class="mini-text">Kaydolanlar</span>
+    </button>
+    <button data-page="settings" class="menu-item" title="Ayarlar">
+      <span class="icon">⚙️</span><span class="mini-text">Ayarlar</span>
+    </button>
+    <button id="logoutBtn" style="margin-top:20px; background:#ff4444;" title="Çıkış Yap" hidden>
+      🚪 Çıkış Yap
+    </button>
+  </nav>
+</nav>
 
-<div id="menuNav">
-  <a href="#" id="menuClose">Menüyü Kapat ✖</a>
-  <a href="#">Mesajlaşma 📩</a>
-  <a href="#">Leader Board 🏆</a>
-  <a href="#">Kaydolanlar 👥</a>
-  <a href="#" id="toggleDark">🌙 / ☀️ Karanlık Mod</a>
-  <a href="#" id="logoutBtn">Çıkış Yap 🚪</a>
-</div>
+<main>
+  <!-- Yüklenme animasyonu -->
+  <div id="loadingSpinner"></div>
 
-<div id="loading"><div class="spinner"></div></div>
+  <!-- Hata mesajları -->
+  <div id="errorContainer"></div>
 
-<div class="center" id="authSec">
-  <h2>ElevenGalaxy™</h2>
-  <input type="text" id="regUsername" placeholder="Kullanıcı Adı (Kayıt için)">
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Şifre">
-  <button id="loginBtn">Giriş Yap</button>
-  <button id="regBtn">Kayıt Ol</button>
-  <div class="msgErr" id="msgErr"></div>
-  <div class="msgSuc" id="msgSuc"></div>
-</div>
+  <!-- Ana içerik alanları -->
+  <section id="pageMessages" class="page" style="display:none;">
+    <h2>Mesajlaşma</h2>
+    <div id="messages"></div>
+    <form id="msgForm">
+      <input type="text" id="msgInput" placeholder="Mesaj yaz..." autocomplete="off" />
+      <button type="submit" id="msgSendBtn">Gönder</button>
+    </form>
+  </section>
 
-<div class="center" id="welcome" style="display:none;">
-  <h2>Hoşgeldin, <span id="welcomeName"></span>!</h2>
-</div>
+  <section id="pageUsers" class="page" style="display:none;">
+    <h2>Kaydolanlar</h2>
+    <ul id="userList"></ul>
+  </section>
 
-<!-- Firebase + App JS -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-  import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-database.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+  <section id="pageSettings" class="page" style="display:none;">
+    <h2>Ayarlar</h2>
+    <form id="settingsForm">
+      <img id="profilePreview" src="https://via.placeholder.com/96?text=Profil" alt="Profil Fotoğrafı" />
+      <label for="usernameInput">Kullanıcı Adı:</label>
+      <input type="text" id="usernameInput" placeholder="Kullanıcı adınızı girin" required />
+      <label for="profilePhotoInput">Profil Fotoğrafı Yükle:</label>
+      <input type="file" id="profilePhotoInput" accept="image/*" />
+      <div style="margin:16px 0;">
+        <label>
+          <input type="checkbox" id="darkModeToggle" />
+          Karanlık Mod
+        </label>
+      </div>
+      <button type="submit" class="primary">Kaydet</button>
+    </form>
+  </section>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
-    authDomain: "elevengalaxy-web.firebaseapp.com",
-    projectId: "elevengalaxy-web",
-    storageBucket: "elevengalaxy-web.firebasestorage.app",
-    messagingSenderId: "1044606246550",
-    appId: "1:1044606246550:web:ba8d2759baa146f59f2cb7",
-    measurementId: "G-V4M47VJ409"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const auth = getAuth(app);
-
-  // Elements
-  const menuBtn = document.getElementById("menuBtn");
-  const menuNav = document.getElementById("menuNav");
-  const menuClose = document.getElementById("menuClose");
-  const toggleDark = document.getElementById("toggleDark");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const authSec = document.getElementById("authSec");
-  const welcome = document.getElementById("welcome");
-  const welcomeName = document.getElementById("welcomeName");
-  const regUsername = document.getElementById("regUsername");
-  const email = document.getElementById("email");
-  const password = document.getElementById("password");
-  const loginBtn = document.getElementById("loginBtn");
-  const regBtn = document.getElementById("regBtn");
-  const msgErr = document.getElementById("msgErr");
-  const msgSuc = document.getElementById("msgSuc");
-  const loading = document.getElementById("loading");
-
-  function showLoad(show) { loading.style.display = show ? "flex" : "none"; }
-  function clearMsgs() { msgErr.innerText=""; msgSuc.innerText=""; }
-
-  // Auth state
-  onAuthStateChanged(auth, user=>{
-    if(user){
-      authSec.style.display="none";
-      welcome.style.display="block";
-      menuBtn.style.display="block";
-      showLoad(1);
-      get(child(ref(db), "users/"+user.uid+"/username"))
-        .then(snapshot=>{
-          welcomeName.innerText=snapshot.exists() ? snapshot.val() : user.email;
-          showLoad(0);
-        })
-        .catch(e=>{ console.error(e); showLoad(0); });
-    } else {
-      authSec.style.display="block";
-      welcome.style.display="none";
-      menuBtn.style.display="none";
-      menuNav.classList.remove("visible");
-      showLoad(0);
-    }
-  });
-
-  // Kayıt ol
-  regBtn.onclick=()=>{
-    clearMsgs(); showLoad(1);
-    createUserWithEmailAndPassword(auth, email.value, password.value)
-      .then(cred=>{
-        return set(ref(db, "users/"+cred.user.uid), {
-          username: regUsername.value,
-          email: email.value
-        });
-      })
-      .then(()=>{
-        msgSuc.innerText="Kayıt başarılı. Giriş yapabilirsiniz.";
-      })
-      .catch(e=>{
-        msgErr.innerText=e.message;
-      })
-      .finally(()=>showLoad(0));
-  };
-
-  // Giriş yap
-  loginBtn.onclick=()=>{
-    clearMsgs(); showLoad(1);
-    signInWithEmailAndPassword(auth, email.value, password.value)
-      .catch(e=>{
-        msgErr.innerText=e.message;
-      })
-      .finally(()=>showLoad(0));
-  };
-
-  // Çıkış yap
-  logoutBtn.onclick=()=>{
-    showLoad(1);
-    signOut(auth).finally(()=>showLoad(0));
-  };
-
-  // Menü aç/kapat
-  menuBtn.onclick=_=>{
-    menuNav.classList.toggle("visible");
-  };
-  menuClose.onclick=_=>{
-    menuNav.classList.remove("visible");
-  };
-
-  // Karanlık mod (animasyonlu geçiş)
-  toggleDark.onclick=_=>{
-    document.body.classList.toggle("dark-mode");
-  };
-</script>
-
-</body>
-</html>
+  <!-- Giriş/Kayıt ekranı -->
+  <section id="pageAuth" style="max-width:350px; margin:auto; padding:16px;">
+    <h2>Giriş / Kayıt</h2>
+    <div id="authError" class="error-msg" style="display:none;"></div>
+    <form id="loginForm" style="margin-bottom:16px;">
+      <input type="email" id="loginEmail" placeholder="E-posta" autocomplete="username" required />
+      <input type="password" id="loginPassword" placeholder="Şifre" autocomplete="current-password" required />
+      <button type="submit" class="primary">Giriş Yap</button>
+    </form>
+    <form id="registerForm">
+      <input type="text" id="registerUsername" placeholder="Kullanıcı Adı" required />
+      <input type="email" id="registerEmail" placeholder="E-posta" autocomplete="email" required />
