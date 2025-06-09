@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ElevenGalaxy™ Chat</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 480px; margin: 30px auto; padding: 20px; }
+    input, button { width: 100%; padding: 10px; margin: 6px 0; box-sizing: border-box; }
+    #messages { border: 1px solid #ccc; height: 250px; overflow-y: auto; margin: 15px 0; padding: 10px; background: #f9f9f9; }
+    .message { border-bottom: 1px solid #ddd; padding: 6px 0; }
+    #user-info { margin-bottom: 20px; }
+    #logout-btn { background: #e74c3c; color: white; border: none; cursor: pointer; }
+    #send-msg-btn { background: #27ae60; color: white; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<h1>ElevenGalaxy™</h1>
+
+<div id="auth-section">
+  <input type="email" id="email" placeholder="E-posta" />
+  <input type="password" id="password" placeholder="Şifre" />
+  <input type="text" id="username" placeholder="Kullanıcı Adı (Kayıt için)" />
+  <button id="register-btn">Kayıt Ol</button>
+  <button id="login-btn">Giriş Yap</button>
+</div>
+
+<div id="user-info" style="display:none;">
+  <p>Hoş geldin, <span id="display-name"></span>!</p>
+  <button id="logout-btn">Çıkış Yap</button>
+</div>
+
+<div>
+  <div id="messages"></div>
+  <input type="text" id="message-input" placeholder="Mesaj yaz..." disabled />
+  <button id="send-msg-btn" disabled>Gönder</button>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
+  import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    onAuthStateChanged, 
+    signOut, 
+    updateProfile 
+  } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+  import { 
+    getFirestore, 
+    collection, 
+    addDoc, 
+    query, 
+    orderBy, 
+    onSnapshot, 
+    serverTimestamp 
+  } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
+
+  // Senin Firebase config'in (senin verdiğin bilgilerle)
+  const firebaseConfig = {
+    apiKey: "AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
+    authDomain: "elevengalaxy-web.firebaseapp.com",
+    projectId: "elevengalaxy-web",
+    storageBucket: "elevengalaxy-web.appspot.com",
+    messagingSenderId: "1044606246550",
+    appId: "1:1044606246550:web:ba8d2759baa146f59f2cb7",
+  };
+
+  // Firebase başlat
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // DOM elementleri
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const usernameInput = document.getElementById('username');
+  const registerBtn = document.getElementById('register-btn');
+  const loginBtn = document.getElementById('login-btn');
+  const logoutBtn = document.getElementById('logout-btn');
+  const userInfo = document.getElementById('user-info');
+  const displayNameSpan = document.getElementById('display-name');
+  const authSection = document.getElementById('auth-section');
+  const messagesDiv = document.getElementById('messages');
+  const messageInput = document.getElementById('message-input');
+  const sendMsgBtn = document.getElementById('send-msg-btn');
+
+  // Kayıt olma
+  registerBtn.addEventListener('click', async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    const username = usernameInput.value.trim();
+
+    if (!email || !password || !username) {
+      alert('Lütfen e-posta, şifre ve kullanıcı adı girin.');
+      return;
+    }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, { displayName: username });
+      alert('Kayıt başarılı! Giriş yapabilirsiniz.');
+      emailInput.value = '';
+      passwordInput.value = '';
+      usernameInput.value = '';
+    } catch (error) {
+      alert('Kayıt hatası: ' + error.message);
+    }
+  });
+
+  // Giriş yapma
+  loginBtn.addEventListener('click', async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!email || !password) {
+      alert('Lütfen e-posta ve şifre girin.');
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      emailInput.value = '';
+      passwordInput.value = '';
+      usernameInput.value = '';
+    } catch (error) {
+      alert('Giriş hatası: ' + error.message);
+    }
+  });
+
+  // Çıkış yapma
+  logoutBtn.addEventListener('click', async () => {
+    await signOut(auth);
+  });
+
+  // Kullanıcı durumunu kontrol et
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      authSection.style.display = 'none';
+      userInfo.style.display = 'block';
+      displayNameSpan.textContent = user.displayName || user.email;
+      messageInput.disabled = false;
+      sendMsgBtn.disabled = false;
+      listenMessages();
+    } else {
+      authSection.style.display = 'block';
+      userInfo.style.display = 'none';
+      displayNameSpan.textContent = '';
+      messageInput.disabled = true;
+      sendMsgBtn.disabled = true;
+      messagesDiv.innerHTML = '';
+      unsubscribeMessages();
+    }
+  });
+
+  // Mesaj gönderme
+  sendMsgBtn.addEventListener('click', async () => {
+    const text = messageInput.value.trim();
+    if (!text) return;
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+      await addDoc(collection(db, "messages"), {
+        text,
+        userId: user.uid,
+        userName: user.displayName || user.email,
+        timestamp: serverTimestamp()
+      });
+      messageInput.value = '';
+    } catch (e) {
+      alert('Mesaj gönderme hatası: ' + e.message);
+    }
+  });
+
+  // Mesajları dinleme
+  let unsubscribeMessages = () => {};
+  function listenMessages() {
+    const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
+    unsubscribeMessages = onSnapshot(q, (querySnapshot) => {
+      messagesDiv.innerHTML = '';
+      querySnapshot.forEach(doc => {
+        const msg = doc.data();
+        const div = document.createElement('div');
+        div.classList.add('message');
+        const time = msg.timestamp ? new Date(msg.timestamp.seconds * 1000).toLocaleTimeString() : '';
+        div.textContent = `[${time}] ${msg.userName}: ${msg.text}`;
+        messagesDiv.appendChild(div);
+      });
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+  }
+</script>
+
+</body>
+</html>
