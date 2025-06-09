@@ -3,190 +3,350 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>%100 Garantili Çalışan Menü Örneği</title>
+<title>ElevenGalaxy Chat App</title>
 <style>
-  /* Temel body */
-  body {
-    margin: 0; font-family: Arial, sans-serif;
-    background-color: #fff;
-    color: #222;
-    transition: background-color 0.3s, color 0.3s;
+  /* Reset & basics */
+  body, html {
+    margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f0f0; color: #222; transition: background-color 0.4s ease, color 0.4s ease;
+    overflow-x: hidden;
   }
   body.dark {
-    background-color: #121212;
-    color: #eee;
+    background: #121212; color: #eee;
   }
-
-  /* Menü butonu (hamburger) */
-  #menuBtn {
-    font-size: 2rem;
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background: #4a90e2;
-    color: white;
-    border: none;
-    padding: 0.2rem 0.6rem;
+  a { text-decoration: none; color: inherit; }
+  button {
     cursor: pointer;
-    border-radius: 4px;
+    background: #2979ff; border: none; border-radius: 4px;
+    color: white; padding: 8px 14px; font-weight: 600;
+    transition: background-color 0.3s ease;
+  }
+  button:hover { background: #0059c1; }
+  input, select {
+    padding: 8px; margin: 5px 0 10px 0;
+    border: 1.5px solid #aaa; border-radius: 5px;
+    width: 100%; box-sizing: border-box;
+    font-size: 14px;
+    background: white; color: black;
+    transition: border-color 0.3s ease;
+  }
+  body.dark input, body.dark select {
+    background: #222; color: #ddd; border-color: #555;
+  }
+  input:focus, select:focus {
+    border-color: #2979ff; outline: none;
+  }
+  /* Spinner */
+  #loadingSpinner {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
     z-index: 9999;
   }
-
-  /* Menü paneli */
-  #menuPanel {
-    position: fixed;
-    top: 0;
-    left: -260px;
-    width: 260px;
+  .spinner {
+    border: 6px solid #eee;
+    border-top: 6px solid #2979ff;
+    border-radius: 50%;
+    width: 50px; height: 50px;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  /* Layout */
+  #app {
+    display: flex;
     height: 100vh;
-    background-color: #333;
+    overflow: hidden;
+  }
+  /* Sidebar menu */
+  #sidebar {
+    position: fixed;
+    left: -220px;
+    top: 0; bottom: 0;
+    width: 220px;
+    background: #2979ff;
     color: white;
-    padding: 1rem;
+    padding: 20px 10px;
     box-sizing: border-box;
     transition: left 0.3s ease;
-    z-index: 9998;
+    z-index: 999;
+    font-size: 12px;
   }
-  #menuPanel.open {
+  #sidebar.open {
     left: 0;
   }
-
-  /* Menü içeriği */
-  #welcomeMsg {
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 1rem;
-    display: none;
+  #sidebar.dark {
+    background: #003977;
   }
-  button.menu-btn {
-    display: block;
-    width: 100%;
-    padding: 0.6rem;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-    background-color: #4a90e2;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
+  #sidebar h2 {
+    margin: 0 0 15px 10px;
+    font-weight: 700;
   }
-  button.menu-btn.logout {
-    background-color: #d9534f;
-  }
-
-  /* Karanlık mod label ve checkbox */
-  #darkModeLabel {
+  #sidebar button, #sidebar label {
     display: flex;
     align-items: center;
-    margin-top: 2rem;
+    margin-bottom: 12px;
+    gap: 8px;
+  }
+  #sidebar button {
+    width: 100%;
+    font-size: 13px;
+  }
+  #sidebar .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0;
     cursor: pointer;
-    font-size: 1rem;
+    padding: 8px 10px;
+    border-radius: 5px;
+    user-select: none;
+    transition: background-color 0.2s ease;
+  }
+  #sidebar .menu-item:hover {
+    background: rgba(255 255 255 / 0.2);
+  }
+  #sidebar .menu-icon {
+    width: 18px; height: 18px;
+    fill: white;
+    flex-shrink: 0;
+  }
+  /* Hamburger button */
+  #hamburger {
+    position: fixed;
+    top: 15px; left: 15px;
+    z-index: 1000;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 30px; height: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  #hamburger span {
+    display: block;
+    height: 3px;
+    background: #2979ff;
+    border-radius: 2px;
+    transition: background-color 0.3s ease;
+  }
+  body.dark #hamburger span {
+    background: #eee;
+  }
+  /* Main content */
+  #main {
+    flex-grow: 1;
+    margin-left: 0;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+    overflow-y: auto;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  #sidebar.open + #main {
+    margin-left: 220px;
+  }
+  /* Header */
+  #header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  #header h1 {
+    font-weight: 700;
+    font-size: 22px;
     user-select: none;
   }
-  #darkModeCheckbox {
-    margin-right: 0.5rem;
-    transform: scale(1.3);
+  #header small {
+    font-weight: 600;
+    color: #555;
   }
-</style>
-</head>
-<body>
-
-<button id="menuBtn" aria-label="Menüyü aç">☰</button>
-
-<div id="menuPanel" aria-label="Yan Menü">
-  <div id="welcomeMsg">Hoşgeldin, <span id="usernameDisplay"></span>!</div>
-  <button id="loginBtn" class="menu-btn">Giriş Yap</button>
-  <button id="logoutBtn" class="menu-btn logout" style="display:none;">Çıkış Yap</button>
-
-  <label id="darkModeLabel" for="darkModeCheckbox">
-    <input type="checkbox" id="darkModeCheckbox" /> Karanlık Mod
-  </label>
-</div>
-
-<script>
-  const menuBtn = document.getElementById('menuBtn');
-  const menuPanel = document.getElementById('menuPanel');
-  const loginBtn = document.getElementById('loginBtn');
-  const logoutBtn = document.getElementById('logoutBtn');
-  const welcomeMsg = document.getElementById('welcomeMsg');
-  const usernameDisplay = document.getElementById('usernameDisplay');
-  const darkModeCheckbox = document.getElementById('darkModeCheckbox');
-
-  // Menü aç/kapa fonksiyonu
-  menuBtn.addEventListener('click', () => {
-    menuPanel.classList.toggle('open');
-  });
-
-  // Menü dışına tıklanınca menüyü kapat
-  document.addEventListener('click', (e) => {
-    if (!menuPanel.contains(e.target) && e.target !== menuBtn) {
-      menuPanel.classList.remove('open');
-    }
-  });
-
-  // Kullanıcı bilgilerini localStorage'dan oku ve uygula
-  function loadUser() {
-    const username = localStorage.getItem('username');
-    if (username) {
-      usernameDisplay.textContent = username;
-      welcomeMsg.style.display = 'block';
-      loginBtn.style.display = 'none';
-      logoutBtn.style.display = 'block';
-    } else {
-      welcomeMsg.style.display = 'none';
-      loginBtn.style.display = 'block';
-      logoutBtn.style.display = 'none';
-    }
+  body.dark #header small {
+    color: #bbb;
   }
-
-  // Karanlık mod durumunu localStorage'dan oku ve uygula
-  function loadDarkMode() {
-    const darkMode = localStorage.getItem('darkMode');
-    if (darkMode === 'true') {
-      document.body.classList.add('dark');
-      darkModeCheckbox.checked = true;
-    } else {
-      document.body.classList.remove('dark');
-      darkModeCheckbox.checked = false;
-    }
+  /* Forms */
+  .form-container {
+    max-width: 400px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
+    color: black;
   }
-
-  // Giriş yap butonu
-  loginBtn.addEventListener('click', () => {
-    const username = prompt('Kullanıcı adınızı girin:').trim();
-    if (username) {
-      localStorage.setItem('username', username);
-      loadUser();
-      menuPanel.classList.remove('open');
-      alert(`Hoşgeldin, ${username}!`);
-    } else {
-      alert('Geçerli bir kullanıcı adı giriniz.');
-    }
-  });
-
-  // Çıkış yap butonu
-  logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('username');
-    loadUser();
-    menuPanel.classList.remove('open');
-  });
-
-  // Karanlık mod toggle
-  darkModeCheckbox.addEventListener('change', () => {
-    if (darkModeCheckbox.checked) {
-      document.body.classList.add('dark');
-      localStorage.setItem('darkMode', 'true');
-    } else {
-      document.body.classList.remove('dark');
-      localStorage.setItem('darkMode', 'false');
-    }
-  });
-
-  // Sayfa yüklendiğinde kullanıcı ve tema durumu yükle
-  window.addEventListener('load', () => {
-    loadUser();
-    loadDarkMode();
-  });
-</script>
-
-</body>
-</html>
+  body.dark .form-container {
+    background: #222;
+    color: #ddd;
+  }
+  .form-container h3 {
+    margin-top: 0;
+    font-weight: 700;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .form-group label {
+    font-weight: 600;
+  }
+  .error-msg {
+    color: #e53935;
+    font-size: 13px;
+    margin: 5px 0 0 0;
+  }
+  /* Message board */
+  #messagesContainer {
+    max-width: 700px;
+    margin: 0 auto 50px auto;
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+    color: black;
+  }
+  body.dark #messagesContainer {
+    background: #222;
+    color: #ddd;
+  }
+  #messagesContainer h3 {
+    margin: 0 0 10px 0;
+    font-weight: 700;
+    font-size: 18px;
+  }
+  .message {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    display: flex;
+    gap: 10px;
+  }
+  body.dark .message {
+    border-color: #444;
+  }
+  .message:last-child {
+    border-bottom: none;
+  }
+  .message .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #bbb;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .message .avatar img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .message .content {
+    flex-grow: 1;
+  }
+  .message .username {
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .message .text {
+    font-size: 13px;
+    margin-top: 3px;
+    white-space: pre-wrap;
+  }
+  .message .time {
+    font-size: 11px;
+    color: #999;
+    margin-left: 10px;
+    white-space: nowrap;
+  }
+  body.dark .message .time {
+    color: #aaa;
+  }
+  /* Input message */
+  #sendMessageForm {
+    max-width: 700px;
+    margin: 10px auto 30px auto;
+    display: flex;
+    gap: 10px;
+  }
+  #sendMessageForm input[type="text"] {
+    flex-grow: 1;
+    font-size: 15px;
+  }
+  /* User list */
+  #usersList {
+    max-width: 700px;
+    margin: 0 auto 30px auto;
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+    color: black;
+    font-size: 13px;
+  }
+  body.dark #usersList {
+    background: #222;
+    color: #ddd;
+  }
+  #usersList h3 {
+    margin: 0 0 10px 0;
+    font-weight: 700;
+  }
+  #usersList ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  #usersList li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  body.dark #usersList li {
+    border-color: #444;
+  }
+  #usersList li:last-child {
+    border-bottom: none;
+  }
+  #usersList .user-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #bbb;
+    flex-shrink: 0;
+  }
+  #usersList .user-avatar img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  /* Settings */
+  #settingsContainer {
+    max-width: 400px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
+    color: black;
+  }
+  body.dark #settingsContainer {
+    background: #222;
+    color: #ddd;
+  }
+  #settingsContainer h3 {
+    margin-top: 0;
+    font-weight: 700;
+  }
+  #settingsContainer label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  #settingsContainer input[type="file"] {
+    padding: 5px 0;
+  }
+  #settingsContainer button {
+    width: 100%;
+    margin-top: 15px;
+  }
+  /* Welcome message */
+  #welcomeMsg
