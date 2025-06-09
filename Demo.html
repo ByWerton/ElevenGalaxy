@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<title>Çalışan Basit Demo</title>
+<style>
+  body { font-family: Arial; background: #eee; margin: 0; padding: 20px; }
+  #menuBtn { font-size: 24px; cursor: pointer; display: none; margin-bottom: 10px; }
+  #sideMenu {
+    background: #0055ff; color: white;
+    width: 200px; position: fixed; top: 0; left: -200px; height: 100%;
+    padding: 10px; box-sizing: border-box; transition: left 0.3s;
+  }
+  #sideMenu.open { left: 0; }
+  #sideMenu button {
+    background: none; border: none; color: white; font-size: 18px;
+    width: 100%; padding: 10px; margin: 5px 0; cursor: pointer;
+  }
+  main { margin-left: 0; transition: margin-left 0.3s; padding-top: 40px; }
+  body.menu-open main { margin-left: 200px; }
+  form { max-width: 300px; margin: auto; background: white; padding: 20px; border-radius: 5px; }
+  input { width: 100%; padding: 8px; margin: 8px 0; box-sizing: border-box; }
+  button.primary { width: 100%; background: #0055ff; color: white; border: none; padding: 10px; font-size: 16px; border-radius: 5px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<header>
+  <span id="menuBtn">&#9776; Menü</span>
+</header>
+
+<div id="sideMenu" aria-label="Menü">
+  <button id="navProfile">Profil</button>
+  <button id="logoutBtn" style="background: #ff4444;">Çıkış Yap</button>
+</div>
+
+<main>
+  <form id="loginForm">
+    <h2>Giriş Yap</h2>
+    <input type="text" id="username" placeholder="Kullanıcı Adı" required />
+    <button type="submit" class="primary">Giriş Yap</button>
+  </form>
+
+  <section id="profileSection" style="display:none; max-width: 300px; margin: auto; background: white; padding: 20px; border-radius: 5px;">
+    <h2>Profil</h2>
+    <p>Hoşgeldin, <span id="profileUsername"></span>!</p>
+  </section>
+</main>
+
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const sideMenu = document.getElementById('sideMenu');
+  const loginForm = document.getElementById('loginForm');
+  const profileSection = document.getElementById('profileSection');
+  const profileUsername = document.getElementById('profileUsername');
+  const navProfile = document.getElementById('navProfile');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  let loggedInUser = null;
+
+  // Menü butonu aç/kapa
+  menuBtn.addEventListener('click', () => {
+    sideMenu.classList.toggle('open');
+    document.body.classList.toggle('menu-open');
+  });
+
+  // Giriş formu submit
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const usernameInput = document.getElementById('username').value.trim();
+    if(usernameInput === '') {
+      alert('Kullanıcı adı boş olamaz');
+      return;
+    }
+    loggedInUser = usernameInput;
+    profileUsername.textContent = loggedInUser;
+    loginForm.style.display = 'none';
+    profileSection.style.display = 'block';
+    menuBtn.style.display = 'inline-block';
+    document.body.classList.add('menu-open');
+    sideMenu.classList.add('open');
+  });
+
+  // Profil menü tıklaması
+  navProfile.addEventListener('click', () => {
+    profileSection.style.display = 'block';
+    sideMenu.classList.remove('open');
+    document.body.classList.remove('menu-open');
+  });
+
+  // Çıkış yap
+  logoutBtn.addEventListener('click', () => {
+    loggedInUser = null;
+    profileSection.style.display = 'none';
+    loginForm.style.display = 'block';
+    menuBtn.style.display = 'none';
+    sideMenu.classList.remove('open');
+    document.body.classList.remove('menu-open');
+  });
+</script>
+
+</body>
+</html>
