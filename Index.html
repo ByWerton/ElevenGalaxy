@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ElevenGalaxy™ Prototip 1.5</title>
+<title>ElevenGalaxy Prototip 2</title>
 <style>
   :root {
     --bg-light: #f5f7fa;
@@ -27,9 +27,6 @@
     background: var(--bg-dark);
     color: var(--text-dark);
   }
-  a, button {
-    cursor: pointer;
-  }
   header {
     height: 56px;
     background: var(--primary);
@@ -41,13 +38,13 @@
     font-size: 1.2rem;
     user-select: none;
   }
-  header .menu-btn {
+  #menuBtn {
     font-size: 1.6rem;
     margin-right: 16px;
     user-select: none;
-    display: none;
+    cursor: pointer;
   }
-  header .welcome {
+  #welcomeText {
     flex-grow: 1;
   }
   #sideMenu {
@@ -63,7 +60,6 @@
     padding-top: 10px;
     box-sizing: border-box;
     z-index: 10;
-    display: none;
   }
   #sideMenu.open {
     left: 0;
@@ -82,6 +78,7 @@
     user-select: none;
     transition: background 0.3s;
     letter-spacing: 0.03em;
+    cursor: pointer;
   }
   #sideMenu nav button:hover {
     background: var(--accent);
@@ -135,6 +132,7 @@
     width: 100%;
     font-size: 1rem;
     transition: background 0.3s;
+    cursor: pointer;
   }
   button.primary:hover {
     background: var(--accent);
@@ -280,92 +278,6 @@
 <body>
 
 <header>
-  <div id="menuBtn" class="menu-btn" title="Menüyü aç/kapa">&#9776;</div>
-  <div class="welcome">Lütfen giriş yapınız</div>
-</header>
-
-<div id="sideMenu">
-  <nav>
-    <button id="navProfile"><span class="icon">&#128100;</span>Profil</button>
-    <button id="navMessages"><span class="icon">&#128172;</span>Mesajlar</button>
-    <button id="navUsers"><span class="icon">&#128101;</span>Kullanıcılar</button>
-    <button id="navLogout"><span class="icon">&#128274;</span>Çıkış</button>
-  </nav>
-</div>
-
-<div id="overlay"></div>
-
-<main>
-  <form id="loginForm">
-    <input type="text" id="username" placeholder="Kullanıcı Adı" required autocomplete="off" />
-    <input type="password" id="password" placeholder="Şifre" required autocomplete="off" />
-    <button class="primary" type="submit">Giriş Yap</button>
-  </form>
-</main>
-
-<div id="loadingSpinner"></div>
-
-<script>
-  const menuBtn = document.getElementById('menuBtn');
-  const sideMenu = document.getElementById('sideMenu');
-  const overlay = document.getElementById('overlay');
-  const loginForm = document.getElementById('loginForm');
-  const welcomeText = document.querySelector('header .welcome');
-
-  function toggleMenu() {
-    if (sideMenu.classList.contains('open')) {
-      sideMenu.classList.remove('open');
-      overlay.classList.remove('show');
-      document.body.classList.remove('menu-open');
-    } else {
-      sideMenu.classList.add('open');
-      overlay.classList.add('show');
-      document.body.classList.add('menu-open');
-    }
-  }
-
-  menuBtn.addEventListener('click', toggleMenu);
-  overlay.addEventListener('click', toggleMenu);
-
-  // Başlangıçta menü ve menü tuşu gizli
-  function setMenuActive(active) {
-    if(active) {
-      menuBtn.style.display = 'block';
-      sideMenu.style.display = 'block';
-      welcomeText.textContent = `Hoşgeldiniz, ${sessionStorage.getItem('username')}`;
-    } else {
-      menuBtn.style.display = 'none';
-      sideMenu.style.display = 'none';
-      welcomeText.textContent = 'Lütfen giriş yapınız';
-      if(sideMenu.classList.contains('open')) toggleMenu();
-    }
-  }
-
-  loginForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const username = loginForm.username.value.trim();
-    const password = loginForm.password.value.trim();
-    if(username && password) {
-      sessionStorage.setItem('username', username);
-      setMenuActive(true);
-      loginForm.style.display = 'none';
-    }
-  });
-
-  // Eğer session'da kullanıcı varsa direkt menüyü aktif yap
-  if(sessionStorage.getItem('username')) {
-    setMenuActive(true);
-    loginForm.style.display = 'none';
-  }
-
-  // Çıkış butonu işlevi
-  document.getElementById('navLogout').addEventListener('click', () => {
-    sessionStorage.removeItem('username');
-    setMenuActive(false);
-    loginForm.style.display = 'block';
-  });
-
-</script>
-
-</body>
-</html>
+  <div id="menuBtn" title="Menüyü aç/kapa">&#9776;</div>
+  <div id="welcomeText">Lütfen giriş yapınız</div>
+</header
