@@ -43,6 +43,7 @@
     margin-right: 16px;
     user-select: none;
     cursor: pointer;
+    display: none; /* Menü yalnızca giriş yapınca görünecek */
   }
   #welcomeText {
     flex-grow: 1;
@@ -273,6 +274,13 @@
   #overlay.show {
     display: block;
   }
+  #settingsForm input[type="file"] {
+    padding: 4px 0;
+  }
+  /* Karanlık mod geçiş animasyonu */
+  body.dark, body {
+    transition: background-color 0.6s ease, color 0.6s ease;
+  }
 </style>
 </head>
 <body>
@@ -280,4 +288,6 @@
 <header>
   <div id="menuBtn" title="Menüyü aç/kapa">&#9776;</div>
   <div id="welcomeText">Lütfen giriş yapınız</div>
-</header
+</header>
+
+<div id="sideMenu" aria-label="Menü
