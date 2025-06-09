@@ -2,12 +2,17 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8" />
-    <title>ElevenGalaxy Giriş / Kayıt</title>
+    <title>ElevenGalaxy 🌌</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
             padding: 20px;
+            transition: background-color 0.5s, color 0.5s;
+        }
+        .dark-mode {
+            background-color: #121212;
+            color: #f0f0f0;
         }
         .error {
             color: red;
@@ -19,31 +24,88 @@
             font-weight: bold;
             margin-top: 10px;
         }
+        #menuButton {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        #sideMenu {
+            display: none;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        #sideMenu.visible {
+            display: block;
+        }
+        textarea {
+            width: 100%;
+            height: 60px;
+        }
+        .profile-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <h1>ElevenGalaxy 🌌</h1>
+    <h1>ElevenGalaxy™ 🌌</h1>
 
-    <h2>Giriş Yap</h2>
-    <input type="email" id="loginEmail" placeholder="Email" />
-    <input type="password" id="loginPassword" placeholder="Şifre" />
-    <button id="loginButton">Giriş Yap</button>
+    <button id="darkModeToggle">Karanlık Mod</button>
 
-    <h2>Kayıt Ol</h2>
-    <input type="email" id="registerEmail" placeholder="Email" />
-    <input type="password" id="registerPassword" placeholder="Şifre" />
-    <button id="registerButton">Kayıt Ol</button>
+    <div id="authSection">
+        <h2>Giriş Yap</h2>
+        <input type="email" id="loginEmail" placeholder="Email" />
+        <input type="password" id="loginPassword" placeholder="Şifre" />
+        <button id="loginButton">Giriş Yap</button>
 
-    <div id="errorMessage" class="error"></div>
-    <div id="successMessage" class="success"></div>
+        <h2>Kayıt Ol</h2>
+        <input type="email" id="registerEmail" placeholder="Email" />
+        <input type="password" id="registerPassword" placeholder="Şifre" />
+        <button id="registerButton">Kayıt Ol</button>
+
+        <div id="errorMessage" class="error"></div>
+        <div id="successMessage" class="success"></div>
+    </div>
+
+    <div id="welcomeSection" style="display:none;">
+        <h2 id="welcomeMessage"></h2>
+        <div id="menuButton">☰ Menü</div>
+    </div>
+
+    <div id="sideMenu">
+        <h3>Mesajlaşma</h3>
+        <textarea id="messageInput" placeholder="Mesajınızı yazın..."></textarea>
+        <button id="sendMessageButton">Gönder</button>
+
+        <h3>Leaderboard (En Çok Mesaj Yazanlar)</h3>
+        <ul id="leaderboard">
+            <li>Henüz veri yok.</li>
+        </ul>
+
+        <h3>Kaydolanlar</h3>
+        <div id="registeredUsers">
+            <div>
+                <img src="https://via.placeholder.com/60" class="profile-img" alt="Profil" />
+                Kullanıcı: test@example.com
+            </div>
+        </div>
+
+        <h3>Ayarlar</h3>
+        <label>Profil Fotoğrafı Yükle:
+            <input type="file" id="profilePhotoInput" />
+        </label>
+    </div>
 
     <script type="module">
         // Firebase SDK import
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
 
-        // Config senin verdiğin
         const firebaseConfig = {
             apiKey: "AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
             authDomain: "elevengalaxy-web.firebaseapp.com",
@@ -54,11 +116,9 @@
             measurementId: "G-V4M47VJ409"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Giriş yapma işlemi
         document.getElementById("loginButton").addEventListener("click", () => {
             const email = document.getElementById("loginEmail").value;
             const password = document.getElementById("loginPassword").value;
@@ -66,15 +126,13 @@
 
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    const user = userCredential.user;
-                    showSuccessMessage(`Hoş geldin, ${user.email}!`);
+                    showSuccessMessage(`Hoş geldin, ${userCredential.user.email}!`);
                 })
                 .catch((error) => {
                     handleLoginError(error.code);
                 });
         });
 
-        // Kayıt olma işlemi
         document.getElementById("registerButton").addEventListener("click", () => {
             const email = document.getElementById("registerEmail").value;
             const password = document.getElementById("registerPassword").value;
@@ -82,26 +140,51 @@
 
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    const user = userCredential.user;
-                    showSuccessMessage(`Başarıyla kayıt olundu, hoş geldin ${user.email}!`);
+                    showSuccessMessage(`Başarıyla kayıt olundu, hoş geldin ${userCredential.user.email}!`);
                 })
                 .catch((error) => {
                     handleRegisterError(error.code);
                 });
         });
 
-        // Mesaj temizle
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById("authSection").style.display = "none";
+                document.getElementById("welcomeSection").style.display = "block";
+                document.getElementById("welcomeMessage").innerText = `Hoş geldin, ${user.email}!`;
+                document.getElementById("menuButton").style.display = "block";
+            } else {
+                document.getElementById("authSection").style.display = "block";
+                document.getElementById("welcomeSection").style.display = "none";
+                document.getElementById("sideMenu").classList.remove("visible");
+            }
+        });
+
+        document.getElementById("menuButton").addEventListener("click", () => {
+            document.getElementById("sideMenu").classList.toggle("visible");
+        });
+
+        document.getElementById("sendMessageButton").addEventListener("click", () => {
+            const message = document.getElementById("messageInput").value;
+            if (message.trim() !== "") {
+                alert(`Mesaj gönderildi: ${message}`); // Gerçek veri tabanına kaydetme daha sonra yapılacak
+                document.getElementById("messageInput").value = "";
+            }
+        });
+
+        document.getElementById("darkModeToggle").addEventListener("click", () => {
+            document.body.classList.toggle("dark-mode");
+        });
+
         function clearMessages() {
             document.getElementById("errorMessage").innerText = "";
             document.getElementById("successMessage").innerText = "";
         }
 
-        // Başarılı mesaj
         function showSuccessMessage(msg) {
             document.getElementById("successMessage").innerText = msg;
         }
 
-        // Giriş hatalarını göster
         function handleLoginError(errorCode) {
             let message = "";
             switch (errorCode) {
@@ -121,7 +204,6 @@
             document.getElementById("errorMessage").innerText = message;
         }
 
-        // Kayıt hatalarını göster
         function handleRegisterError(errorCode) {
             let message = "";
             switch (errorCode) {
