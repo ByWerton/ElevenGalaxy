@@ -1,227 +1,232 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8" />
-    <title>ElevenGalaxy 🌌</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            padding: 20px;
-            transition: background-color 0.5s, color 0.5s;
-        }
-        .dark-mode {
-            background-color: #121212;
-            color: #f0f0f0;
-        }
-        .error {
-            color: red;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        .success {
-            color: green;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        #menuButton {
-            display: none;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        #sideMenu {
-            display: none;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-top: 10px;
-        }
-        #sideMenu.visible {
-            display: block;
-        }
-        textarea {
-            width: 100%;
-            height: 60px;
-        }
-        .profile-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 10px;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ElevenGalaxy 🌌</title>
+<style>
+  @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+  body {
+    margin: 0; padding: 0; font-family: Arial, sans-serif;
+    background-color: #f0f0f0; color: #222;
+    transition: background-color 0.5s, color 0.5s;
+  }
+  .dark-mode {
+    background-color: #121212; color: #eee;
+  }
+  h1, h2, h3 {
+    margin: 0 0 10px 0;
+  }
+  #header {
+    padding: 10px 20px;
+    background-color: #222;
+    color: #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #header.dark-mode {
+    background-color: #111;
+  }
+  #menuButton {
+    font-size: 28px;
+    cursor: pointer;
+    user-select: none;
+    color: #eee;
+    display: none;
+  }
+  #darkModeToggle {
+    background: none;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    color: #eee;
+    padding: 5px 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+  #authSection, #welcomeSection {
+    padding: 20px;
+  }
+  input[type="email"], input[type="password"], textarea {
+    width: 100%;
+    padding: 8px;
+    margin: 6px 0 12px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  textarea {
+    resize: vertical;
+  }
+  button {
+    background-color: #222;
+    color: #eee;
+    border: none;
+    padding: 10px 16px;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  button:hover {
+    background-color: #444;
+  }
+  .error {
+    color: #f33;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  .success {
+    color: #3a3;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  /* Side menu style */
+  #sideMenu {
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    width: 240px;
+    max-width: 80vw;
+    background-color: #222;
+    color: #eee;
+    box-shadow: 3px 0 10px rgba(0,0,0,0.5);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    padding-top: 60px;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  #sideMenu.dark-mode {
+    background-color: #111;
+  }
+  #sideMenu.visible {
+    transform: translateX(0);
+  }
+  #sideMenu h3 {
+    font-size: 14px;
+    margin: 15px 20px 5px 20px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 5px;
+  }
+  #sideMenu ul, #registeredUsers {
+    list-style: none;
+    padding-left: 0;
+    margin: 0 10px 10px 10px;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  #sideMenu ul li, #registeredUsers div {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    cursor: default;
+    background-color: #333;
+    margin-bottom: 6px;
+    user-select: none;
+  }
+  #sideMenu ul li:hover, #registeredUsers div:hover {
+    background-color: #444;
+  }
+  .profile-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 1px solid #555;
+  }
+  /* Icon + label container */
+  .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border-bottom: 1px solid #333;
+    user-select: none;
+  }
+  .menu-item i {
+    margin-right: 12px;
+    min-width: 20px;
+    text-align: center;
+  }
+  .menu-item:hover {
+    background-color: #444;
+  }
+
+  /* Message input & send */
+  #messageInput {
+    width: calc(100% - 80px);
+    height: 60px;
+    margin-right: 10px;
+  }
+  #messageRow {
+    display: flex;
+    margin: 0 20px 20px 20px;
+    align-items: center;
+  }
+
+</style>
 </head>
 <body>
 
-    <h1>ElevenGalaxy™ 🌌</h1>
+  <div id="header" class="">
+    <div id="menuButton">☰</div>
+    <h1 style="flex-grow:1; font-size:20px; margin-left:10px;">ElevenGalaxy™</h1>
+    <button id="darkModeToggle" title="Karanlık mod aç/kapat"><i class="fa-solid fa-moon"></i></button>
+  </div>
 
-    <button id="darkModeToggle">Karanlık Mod</button>
+  <div id="authSection">
+    <h2 style="font-size:18px;">Giriş Yap</h2>
+    <input type="email" id="loginEmail" placeholder="Email" />
+    <input type="password" id="loginPassword" placeholder="Şifre" />
+    <button id="loginButton"><i class="fa-solid fa-right-to-bracket"></i> Giriş</button>
 
-    <div id="authSection">
-        <h2>Giriş Yap</h2>
-        <input type="email" id="loginEmail" placeholder="Email" />
-        <input type="password" id="loginPassword" placeholder="Şifre" />
-        <button id="loginButton">Giriş Yap</button>
+    <h2 style="font-size:18px; margin-top:30px;">Kayıt Ol</h2>
+    <input type="email" id="registerEmail" placeholder="Email" />
+    <input type="password" id="registerPassword" placeholder="Şifre" />
+    <button id="registerButton"><i class="fa-solid fa-user-plus"></i> Kayıt</button>
 
-        <h2>Kayıt Ol</h2>
-        <input type="email" id="registerEmail" placeholder="Email" />
-        <input type="password" id="registerPassword" placeholder="Şifre" />
-        <button id="registerButton">Kayıt Ol</button>
+    <div id="errorMessage" class="error"></div>
+    <div id="successMessage" class="success"></div>
+  </div>
 
-        <div id="errorMessage" class="error"></div>
-        <div id="successMessage" class="success"></div>
+  <div id="welcomeSection" style="display:none; padding: 20px;">
+    <h2 style="font-size:18px;">Hoş geldin, <span id="welcomeName"></span>!</h2>
+  </div>
+
+  <!-- Side menu -->
+  <nav id="sideMenu" aria-label="Yan Menü">
+    <div class="menu-item" id="menuMessages"><i class="fa-solid fa-comments"></i> Mesajlar</div>
+    <div class="menu-item" id="menuLeaderboard"><i class="fa-solid fa-trophy"></i> Liderlik</div>
+    <div class="menu-item" id="menuUsers"><i class="fa-solid fa-users"></i> Kaydolanlar</div>
+    <div class="menu-item" id="menuSettings"><i class="fa-solid fa-gear"></i> Ayarlar</div>
+
+    <div id="contentMessages" style="display:none; padding: 10px;">
+      <div id="messageRow">
+        <textarea id="messageInput" placeholder="Mesajını yaz..."></textarea>
+        <button id="sendMessageButton" title="Mesaj gönder"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+      <ul id="messagesList"></ul>
     </div>
 
-    <div id="welcomeSection" style="display:none;">
-        <h2 id="welcomeMessage"></h2>
-        <div id="menuButton">☰ Menü</div>
+    <div id="contentLeaderboard" style="display:none; padding: 10px;">
+      <ul id="leaderboardList"></ul>
     </div>
 
-    <div id="sideMenu">
-        <h3>Mesajlaşma</h3>
-        <textarea id="messageInput" placeholder="Mesajınızı yazın..."></textarea>
-        <button id="sendMessageButton">Gönder</button>
-
-        <h3>Leaderboard (En Çok Mesaj Yazanlar)</h3>
-        <ul id="leaderboard">
-            <li>Henüz veri yok.</li>
-        </ul>
-
-        <h3>Kaydolanlar</h3>
-        <div id="registeredUsers">
-            <div>
-                <img src="https://via.placeholder.com/60" class="profile-img" alt="Profil" />
-                Kullanıcı: test@example.com
-            </div>
-        </div>
-
-        <h3>Ayarlar</h3>
-        <label>Profil Fotoğrafı Yükle:
-            <input type="file" id="profilePhotoInput" />
-        </label>
+    <div id="contentUsers" style="display:none; padding: 10px;">
+      <div id="registeredUsers"></div>
     </div>
 
-    <script type="module">
-        // Firebase SDK import
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
-            authDomain: "elevengalaxy-web.firebaseapp.com",
-            projectId: "elevengalaxy-web",
-            storageBucket: "elevengalaxy-web.firebasestorage.app",
-            messagingSenderId: "1044606246550",
-            appId: "1:1044606246550:web:ba8d2759baa146f59f2cb7",
-            measurementId: "G-V4M47VJ409"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        document.getElementById("loginButton").addEventListener("click", () => {
-            const email = document.getElementById("loginEmail").value;
-            const password = document.getElementById("loginPassword").value;
-            clearMessages();
-
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    showSuccessMessage(`Hoş geldin, ${userCredential.user.email}!`);
-                })
-                .catch((error) => {
-                    handleLoginError(error.code);
-                });
-        });
-
-        document.getElementById("registerButton").addEventListener("click", () => {
-            const email = document.getElementById("registerEmail").value;
-            const password = document.getElementById("registerPassword").value;
-            clearMessages();
-
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    showSuccessMessage(`Başarıyla kayıt olundu, hoş geldin ${userCredential.user.email}!`);
-                })
-                .catch((error) => {
-                    handleRegisterError(error.code);
-                });
-        });
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById("authSection").style.display = "none";
-                document.getElementById("welcomeSection").style.display = "block";
-                document.getElementById("welcomeMessage").innerText = `Hoş geldin, ${user.email}!`;
-                document.getElementById("menuButton").style.display = "block";
-            } else {
-                document.getElementById("authSection").style.display = "block";
-                document.getElementById("welcomeSection").style.display = "none";
-                document.getElementById("sideMenu").classList.remove("visible");
-            }
-        });
-
-        document.getElementById("menuButton").addEventListener("click", () => {
-            document.getElementById("sideMenu").classList.toggle("visible");
-        });
-
-        document.getElementById("sendMessageButton").addEventListener("click", () => {
-            const message = document.getElementById("messageInput").value;
-            if (message.trim() !== "") {
-                alert(`Mesaj gönderildi: ${message}`); // Gerçek veri tabanına kaydetme daha sonra yapılacak
-                document.getElementById("messageInput").value = "";
-            }
-        });
-
-        document.getElementById("darkModeToggle").addEventListener("click", () => {
-            document.body.classList.toggle("dark-mode");
-        });
-
-        function clearMessages() {
-            document.getElementById("errorMessage").innerText = "";
-            document.getElementById("successMessage").innerText = "";
-        }
-
-        function showSuccessMessage(msg) {
-            document.getElementById("successMessage").innerText = msg;
-        }
-
-        function handleLoginError(errorCode) {
-            let message = "";
-            switch (errorCode) {
-                case "auth/invalid-credential":
-                case "auth/invalid-email":
-                    message = "Geçersiz email veya şifre.";
-                    break;
-                case "auth/user-not-found":
-                    message = "Kullanıcı bulunamadı.";
-                    break;
-                case "auth/wrong-password":
-                    message = "Yanlış şifre.";
-                    break;
-                default:
-                    message = "Giriş hatası: " + errorCode;
-            }
-            document.getElementById("errorMessage").innerText = message;
-        }
-
-        function handleRegisterError(errorCode) {
-            let message = "";
-            switch (errorCode) {
-                case "auth/email-already-in-use":
-                    message = "Bu email zaten kullanılıyor.";
-                    break;
-                case "auth/invalid-email":
-                    message = "Geçersiz email adresi.";
-                    break;
-                case "auth/weak-password":
-                    message = "Şifre çok zayıf (en az 6 karakter).";
-                    break;
-                default:
-                    message = "Kayıt hatası: " + errorCode;
-            }
-            document.getElementById("errorMessage").innerText = message;
-        }
-    </script>
-
-</body>
-</html>
+    <div id="contentSettings" style="display:none; padding: 10px;">
+      <label>Profil Fotoğrafı Yükle:<br/>
+        <input type="file" id="profilePhotoInput" accept="image/*" />
+      </label>
+      <br/><br/>
+      <button id="logoutButton" style="background:#a33;"><i
