@@ -3,308 +3,229 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ElevenGalaxy Basit Giriş & Menü</title>
+<title>ElevenGalaxy Prototip 1</title>
 <style>
   :root {
-    --bg-light: #f5f7fa;
-    --text-light: #222;
+    --bg-light: #fefefe;
     --bg-dark: #121212;
+    --text-light: #222;
     --text-dark: #eee;
-    --primary: #0055ff;
-    --accent: #ff5500;
-    --menu-width: 220px;
-    --transition-speed: 0.4s;
+    --primary-color: #4a90e2;
   }
-  html, body {
-    margin:0; padding:0; height:100%;
-    background: var(--bg-light);
+  body {
+    margin: 0; font-family: Arial, sans-serif;
+    background-color: var(--bg-light);
     color: var(--text-light);
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    transition: background var(--transition-speed), color var(--transition-speed);
-    overflow-x: hidden;
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
-  body.dark {
-    background: var(--bg-dark);
+  body.dark-mode {
+    background-color: var(--bg-dark);
     color: var(--text-dark);
   }
-  header {
-    height: 56px;
-    background: var(--primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    padding: 0 12px;
-    font-weight: 700;
-    font-size: 1.2rem;
-    user-select: none;
-  }
-  #menuBtn {
-    font-size: 1.6rem;
-    margin-right: 16px;
-    user-select: none;
-    cursor: pointer;
-    display: none; /* Menü sadece giriş sonrası görünür */
-  }
-  #welcomeText {
-    flex-grow: 1;
-  }
-  #sideMenu {
+
+  /* Menü */
+  #menu {
     position: fixed;
-    top: 56px;
-    left: -var(--menu-width);
-    width: var(--menu-width);
-    height: calc(100% - 56px);
-    background: var(--primary);
+    top: 0; left: -260px;
+    width: 260px; height: 100vh;
+    background: #333;
     color: white;
-    transition: left var(--transition-speed);
+    transition: left 0.3s ease;
+    padding: 1rem;
+    box-sizing: border-box;
     overflow-y: auto;
-    padding-top: 10px;
-    box-sizing: border-box;
-    z-index: 10;
+    z-index: 1000;
   }
-  #sideMenu.open {
-    left: 0;
-    box-shadow: 4px 0 8px rgba(0,0,0,0.3);
+  #menu.open { left: 0; }
+  #menu h2 { margin-top: 0; font-weight: 600; }
+  #menu button.close-btn {
+    background: transparent; border:none; color:#fff; font-size: 2rem;
+    cursor: pointer; position: absolute; top: 10px; right: 10px;
   }
-  #sideMenu nav button {
-    background: none;
-    border: none;
-    color: white;
-    display: flex;
-    align-items: center;
-    padding: 10px 16px;
+  #menu ul {
+    list-style: none; padding: 0; margin-top: 2rem;
+  }
+  #menu ul li {
+    margin: 1rem 0;
+  }
+  #menu ul li button {
     width: 100%;
-    font-size: 0.9rem;
+    padding: 0.5rem;
+    border: none;
+    background: var(--primary-color);
+    color: white;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #menu ul li button:hover {
+    background-color: #357ABD;
+  }
+  #menu .welcome {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
     font-weight: 600;
-    user-select: none;
-    transition: background 0.3s;
-    letter-spacing: 0.03em;
+  }
+  #menu .profile-pic {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 2px solid white;
+  }
+
+  /* Menü açma butonu */
+  #openMenuBtn {
+    position: fixed;
+    top: 1rem; left: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 1.5rem;
     cursor: pointer;
+    z-index: 1100;
   }
-  #sideMenu nav button:hover {
-    background: var(--accent);
-  }
-  main {
-    margin-top: 56px;
-    padding: 16px;
-    transition: margin-left var(--transition-speed);
-  }
-  body.menu-open main {
-    margin-left: var(--menu-width);
-  }
-  form {
-    max-width: 350px;
-    margin: 20px auto;
-    background: rgba(0,0,0,0.05);
-    padding: 16px;
+
+  /* Formlar */
+  .form-container {
+    max-width: 400px;
+    margin: 4rem auto 2rem;
+    background: #eee;
+    padding: 1.5rem;
     border-radius: 8px;
-    box-sizing: border-box;
+    box-shadow: 0 0 6px #ccc;
+    display: none;
+    transition: background-color 0.4s ease;
   }
-  body.dark form {
-    background: rgba(255,255,255,0.1);
+  body.dark-mode .form-container {
+    background: #222;
+    color: var(--text-dark);
+    box-shadow: 0 0 8px #555;
   }
-  input[type="text"], input[type="email"], input[type="password"] {
+  .form-container.active {
+    display: block;
+  }
+  .form-container h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  .form-container label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+  .form-container input[type="text"],
+  .form-container input[type="email"],
+  .form-container input[type="password"],
+  .form-container input[type="file"] {
     width: 100%;
-    padding: 10px 12px;
-    margin-bottom: 12px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    padding: 0.4rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    border: 1px solid #aaa;
     box-sizing: border-box;
     font-size: 1rem;
-    transition: border-color 0.3s;
   }
-  input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
-    border-color: var(--primary);
-    outline: none;
+  body.dark-mode .form-container input {
+    background: #333;
+    border: 1px solid #555;
+    color: var(--text-dark);
   }
-  button.primary {
-    background: var(--primary);
-    border: none;
+  .form-container button {
+    background: var(--primary-color);
     color: white;
-    padding: 12px 18px;
-    border-radius: 6px;
-    font-weight: 700;
-    width: 100%;
+    border: none;
+    padding: 0.6rem 1.2rem;
     font-size: 1rem;
-    transition: background 0.3s;
+    border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
   }
-  button.primary:hover {
-    background: var(--accent);
-  }
-  .mini-text {
-    font-size: 0.75rem;
-    opacity: 0.8;
-    user-select: none;
-    text-align: center;
-    margin-top: 10px;
-    cursor: pointer;
-    color: var(--primary);
+  .form-container button:hover {
+    background-color: #357ABD;
   }
   .error-msg {
-    background: #ff4c4c;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 5px;
-    margin-bottom: 12px;
-    font-weight: 700;
-    user-select: none;
+    color: #ff4d4d;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  /* Ayarlar */
+  #settings {
+    margin-top: 2rem;
+    border-top: 1px solid #555;
+    padding-top: 1rem;
+  }
+  #settings label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  #settings input[type="checkbox"] {
+    margin-right: 0.6rem;
+    transform: scale(1.3);
+  }
+  #profile-pic-preview {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    margin-top: 0.8rem;
+    object-fit: cover;
+    border: 2px solid white;
+  }
+
+  /* Loading spinner */
+  #loadingSpinner {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    width: 50px; height: 50px;
+    animation: spin 1s linear infinite;
+    z-index: 2000;
+  }
+  #loadingSpinner.show {
+    display: block;
+  }
+  @keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg);}
+    100% { transform: translate(-50%, -50%) rotate(360deg);}
+  }
+
+  /* Responsive */
+  @media(max-width:600px) {
+    #menu { width: 200px; }
+    #openMenuBtn { font-size: 1.2rem; padding: 0.3rem 0.7rem; }
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div id="menuBtn" title="Menüyü aç/kapa">&#9776;</div>
-  <div id="welcomeText">Lütfen giriş yapınız</div>
-</header>
+<button id="openMenuBtn" aria-label="Menüyü aç">☰</button>
 
-<div id="sideMenu" aria-label="Menü">
-  <nav>
-    <button id="navProfile">👤 Profil</button>
-    <button id="navMessages">💬 Mesajlar</button>
-    <button id="navUsers">👥 Kullanıcılar</button>
-    <button id="navSettings">⚙️ Ayarlar</button>
-    <button id="logoutBtn" style="margin-top:20px; background:#ff4444;">Çıkış Yap</button>
-  </nav>
-</div>
+<nav id="menu" aria-label="Ana Menü">
+  <button class="close-btn" aria-label="Menüyü kapat">&times;</button>
+  <div id="profileArea" style="text-align:center;">
+    <img id="profilePic" class="profile-pic" src="" alt="Profil Fotoğrafı" style="display:none;" />
+    <div class="welcome" id="welcomeMsg" style="display:none;"></div>
+  </div>
+  <ul id="menuButtons">
+    <li><button id="btnLogin">Giriş Yap</button></li>
+    <li><button id="btnRegister">Kayıt Ol</button></li>
+  </ul>
 
-<main>
-  <!-- Giriş Formu -->
-  <form id="loginForm">
-    <h2>Giriş Yap</h2>
-    <div id="loginError" class="error-msg" style="display:none;"></div>
-    <input type="email" id="loginEmail" placeholder="E-posta" required />
-    <input type="password" id="loginPassword" placeholder="Şifre" required />
-    <button type="submit" class="primary">Giriş Yap</button>
-    <div class="mini-text" id="showRegister">Kayıt olmak istiyorum</div>
-  </form>
+  <div id="settings" style="display:none;">
+    <h3>Ayarlar</h3>
+    <label><input type="checkbox" id="darkModeToggle" /> Karanlık Mod</label>
+    <label for="profilePicInput">Profil Fotoğrafı Yükle:</label>
+    <input type="file" id="profilePicInput" accept="image/*" />
+    <img id="profile-pic-preview" src="" alt="Profil Önizleme" style="display:none;" />
+    <label for="usernameChange">Kullanıcı Adı Değiştir:</label>
+    <input type="text" id="usernameChange" placeholder="Yeni kullanıcı adı" />
+    <button id="saveSettingsBtn">Ayarları Kaydet</button>
+  </div>
+</nav>
 
-  <!-- Kayıt Formu -->
-  <form id="registerForm" style="display:none;">
-    <h2>Kayıt Ol</h2>
-    <div id="registerError" class="error-msg" style="display:none;"></div>
-    <input type="text" id="registerUsername" placeholder="Kullanıcı Adı" required />
-    <input type="email" id="registerEmail" placeholder="E-posta" required />
-    <input type="password" id="registerPassword" placeholder="Şifre" required />
-    <button type="submit" class="primary">Kayıt Ol</button>
-    <div class="mini-text" id="showLogin">Zaten üyeyim, giriş yap</div>
-  </form>
-
-  <!-- Profil -->
-  <section id="profileSection" style="display:none;">
-    <h2>Profil</h2>
-    <p>Hoşgeldin, <span id="profileUsername"></span>!</p>
-  </section>
-
-  <!-- Mesajlar -->
-  <section id="messagesSection" style="display:none;">
-    <h2>Mesajlar</h2>
-    <p>Mesajlaşma sistemi henüz aktif değil.</p>
-  </section>
-
-  <!-- Kullanıcılar -->
-  <section id="usersSection" style="display:none;">
-    <h2>Kullanıcılar</h2>
-    <p>Kullanıcı listesi henüz aktif değil.</p>
-  </section>
-
-  <!-- Ayarlar -->
-  <section id="settingsSection" style="display:none;">
-    <h2>Ayarlar</h2>
-    <p>Karanlık Mod: <button id="darkModeToggle">Değiştir</button></p>
-  </section>
-</main>
-
-<script>
-  // Elements
-  const menuBtn = document.getElementById('menuBtn');
-  const sideMenu = document.getElementById('sideMenu');
-  const welcomeText = document.getElementById('welcomeText');
-
-  const loginForm = document.getElementById('loginForm');
-  const registerForm = document.getElementById('registerForm');
-
-  const showRegister = document.getElementById('showRegister');
-  const showLogin = document.getElementById('showLogin');
-
-  const loginError = document.getElementById('loginError');
-  const registerError = document.getElementById('registerError');
-
-  const profileSection = document.getElementById('profileSection');
-  const messagesSection = document.getElementById('messagesSection');
-  const usersSection = document.getElementById('usersSection');
-  const settingsSection = document.getElementById('settingsSection');
-
-  const navProfile = document.getElementById('navProfile');
-  const navMessages = document.getElementById('navMessages');
-  const navUsers = document.getElementById('navUsers');
-  const navSettings = document.getElementById('navSettings');
-
-  const logoutBtn = document.getElementById('logoutBtn');
-  const darkModeToggle = document.getElementById('darkModeToggle');
-
-  let loggedInUser = null;
-
-  // Menü butonu aç/kapa
-  menuBtn.addEventListener('click', () => {
-    sideMenu.classList.toggle('open');
-    document.body.classList.toggle('menu-open');
-  });
-
-  // Formlar arası geçiş
-  showRegister.addEventListener('click', () => {
-    loginForm.style.display = 'none';
-    registerForm.style.display = 'block';
-    loginError.style.display = 'none';
-    registerError.style.display = 'none';
-  });
-
-  showLogin.addEventListener('click', () => {
-    registerForm.style.display = 'none';
-    loginForm.style.display = 'block';
-    loginError.style.display = 'none';
-    registerError.style.display = 'none';
-  });
-
-  // Basit kullanıcı verisi (sadece tarayıcıda)
-  const users = [];
-
-  // Kayıt işlemi
-  registerForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const username = document.getElementById('registerUsername').value.trim();
-    const email = document.getElementById('registerEmail').value.trim();
-    const password = document.getElementById('registerPassword').value;
-
-    if(users.find(u => u.email === email)){
-      registerError.textContent = "Bu e-posta zaten kayıtlı.";
-      registerError.style.display = 'block';
-      return;
-    }
-
-    users.push({username, email, password});
-    registerError.style.display = 'none';
-    alert("Kayıt başarılı! Giriş yapabilirsiniz.");
-    showLogin.click();
-  });
-
-  // Giriş işlemi
-  loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-
-    const user = users.find(u => u.email === email && u.password === password);
-    if(!user){
-      loginError.textContent = "Hatalı e-posta veya şifre.";
-      loginError.style.display = 'block';
-      return;
-    }
-
-    loginError.style.display = 'none';
-    loggedInUser = user;
-    loginForm.style.display = 'none';
-    registerForm.style.display = 'none';
-    welcomeText.textContent = "Hoşgeldin, " + loggedInUser.username;
-    menuBtn.style.display
+<div id="loadingSpinner" role="status" aria-live="pol
