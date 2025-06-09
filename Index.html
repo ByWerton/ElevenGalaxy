@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ElevenGalaxy™ Prototip 1.5</title>
 <style>
-  /* --- Temel stil ve karanlık mod geçişi animasyonlu --- */
   :root {
     --bg-light: #f5f7fa;
     --text-light: #222;
@@ -31,7 +30,6 @@
   a, button {
     cursor: pointer;
   }
-  /* --- Header --- */
   header {
     height: 56px;
     background: var(--primary);
@@ -47,11 +45,11 @@
     font-size: 1.6rem;
     margin-right: 16px;
     user-select: none;
+    display: none;
   }
   header .welcome {
     flex-grow: 1;
   }
-  /* --- Side menu --- */
   #sideMenu {
     position: fixed;
     top: 56px;
@@ -65,9 +63,11 @@
     padding-top: 10px;
     box-sizing: border-box;
     z-index: 10;
+    display: none;
   }
   #sideMenu.open {
     left: 0;
+    box-shadow: 4px 0 8px rgba(0,0,0,0.3);
   }
   #sideMenu nav button {
     background: none;
@@ -92,7 +92,6 @@
     width: 20px;
     text-align: center;
   }
-  /* --- Main content --- */
   main {
     margin-top: 56px;
     padding: 16px;
@@ -101,7 +100,6 @@
   body.menu-open main {
     margin-left: var(--menu-width);
   }
-  /* --- Forms --- */
   form {
     max-width: 350px;
     margin: auto;
@@ -141,13 +139,11 @@
   button.primary:hover {
     background: var(--accent);
   }
-  /* --- Mini yazılar --- */
   .mini-text {
     font-size: 0.75rem;
     opacity: 0.8;
     user-select: none;
   }
-  /* --- Loading spinner --- */
   #loadingSpinner {
     display: none;
     position: fixed;
@@ -168,7 +164,6 @@
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
-  /* --- Error message --- */
   .error-msg {
     background: #ff4c4c;
     color: white;
@@ -178,7 +173,6 @@
     font-weight: 700;
     user-select: none;
   }
-  /* --- Profile photo preview --- */
   #profilePreview {
     width: 96px;
     height: 96px;
@@ -188,7 +182,6 @@
     display: block;
     border: 2px solid var(--primary);
   }
-  /* --- User list --- */
   #userList {
     max-width: 600px;
     margin: 0 auto;
@@ -216,7 +209,6 @@
     font-weight: 600;
     font-size: 0.9rem;
   }
-  /* --- Messages --- */
   #messages {
     max-width: 700px;
     margin: 0 auto;
@@ -238,7 +230,6 @@
   #messages .msg strong {
     color: var(--primary);
   }
-  /* --- Message input --- */
   #msgForm {
     max-width: 700px;
     margin: 10px auto 40px;
@@ -271,80 +262,110 @@
   #msgSendBtn:hover {
     background: var(--accent);
   }
+  #overlay {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - 56px);
+    background: rgba(0,0,0,0.3);
+    display: none;
+    z-index: 5;
+  }
+  #overlay.show {
+    display: block;
+  }
 </style>
 </head>
 <body>
+
 <header>
-  <div id="menuBtn" class="menu-btn" title="Menüyü aç/kapa">☰</div>
-  <div class="welcome" id="welcomeText">ElevenGalaxy™</div>
+  <div id="menuBtn" class="menu-btn" title="Menüyü aç/kapa">&#9776;</div>
+  <div class="welcome">Lütfen giriş yapınız</div>
 </header>
 
-<nav id="sideMenu" aria-label="Ana Menü">
+<div id="sideMenu">
   <nav>
-    <button data-page="messages" class="menu-item" title="Mesajlaşma">
-      <span class="icon">💬</span><span class="mini-text">Mesajlar</span>
-    </button>
-    <button data-page="users" class="menu-item" title="Kaydolanlar">
-      <span class="icon">👥</span><span class="mini-text">Kaydolanlar</span>
-    </button>
-    <button data-page="settings" class="menu-item" title="Ayarlar">
-      <span class="icon">⚙️</span><span class="mini-text">Ayarlar</span>
-    </button>
-    <button id="logoutBtn" style="margin-top:20px; background:#ff4444;" title="Çıkış Yap" hidden>
-      🚪 Çıkış Yap
-    </button>
+    <button id="navProfile"><span class="icon">&#128100;</span>Profil</button>
+    <button id="navMessages"><span class="icon">&#128172;</span>Mesajlar</button>
+    <button id="navUsers"><span class="icon">&#128101;</span>Kullanıcılar</button>
+    <button id="navLogout"><span class="icon">&#128274;</span>Çıkış</button>
   </nav>
-</nav>
+</div>
+
+<div id="overlay"></div>
 
 <main>
-  <!-- Yüklenme animasyonu -->
-  <div id="loadingSpinner"></div>
+  <form id="loginForm">
+    <input type="text" id="username" placeholder="Kullanıcı Adı" required autocomplete="off" />
+    <input type="password" id="password" placeholder="Şifre" required autocomplete="off" />
+    <button class="primary" type="submit">Giriş Yap</button>
+  </form>
+</main>
 
-  <!-- Hata mesajları -->
-  <div id="errorContainer"></div>
+<div id="loadingSpinner"></div>
 
-  <!-- Ana içerik alanları -->
-  <section id="pageMessages" class="page" style="display:none;">
-    <h2>Mesajlaşma</h2>
-    <div id="messages"></div>
-    <form id="msgForm">
-      <input type="text" id="msgInput" placeholder="Mesaj yaz..." autocomplete="off" />
-      <button type="submit" id="msgSendBtn">Gönder</button>
-    </form>
-  </section>
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const sideMenu = document.getElementById('sideMenu');
+  const overlay = document.getElementById('overlay');
+  const loginForm = document.getElementById('loginForm');
+  const welcomeText = document.querySelector('header .welcome');
 
-  <section id="pageUsers" class="page" style="display:none;">
-    <h2>Kaydolanlar</h2>
-    <ul id="userList"></ul>
-  </section>
+  function toggleMenu() {
+    if (sideMenu.classList.contains('open')) {
+      sideMenu.classList.remove('open');
+      overlay.classList.remove('show');
+      document.body.classList.remove('menu-open');
+    } else {
+      sideMenu.classList.add('open');
+      overlay.classList.add('show');
+      document.body.classList.add('menu-open');
+    }
+  }
 
-  <section id="pageSettings" class="page" style="display:none;">
-    <h2>Ayarlar</h2>
-    <form id="settingsForm">
-      <img id="profilePreview" src="https://via.placeholder.com/96?text=Profil" alt="Profil Fotoğrafı" />
-      <label for="usernameInput">Kullanıcı Adı:</label>
-      <input type="text" id="usernameInput" placeholder="Kullanıcı adınızı girin" required />
-      <label for="profilePhotoInput">Profil Fotoğrafı Yükle:</label>
-      <input type="file" id="profilePhotoInput" accept="image/*" />
-      <div style="margin:16px 0;">
-        <label>
-          <input type="checkbox" id="darkModeToggle" />
-          Karanlık Mod
-        </label>
-      </div>
-      <button type="submit" class="primary">Kaydet</button>
-    </form>
-  </section>
+  menuBtn.addEventListener('click', toggleMenu);
+  overlay.addEventListener('click', toggleMenu);
 
-  <!-- Giriş/Kayıt ekranı -->
-  <section id="pageAuth" style="max-width:350px; margin:auto; padding:16px;">
-    <h2>Giriş / Kayıt</h2>
-    <div id="authError" class="error-msg" style="display:none;"></div>
-    <form id="loginForm" style="margin-bottom:16px;">
-      <input type="email" id="loginEmail" placeholder="E-posta" autocomplete="username" required />
-      <input type="password" id="loginPassword" placeholder="Şifre" autocomplete="current-password" required />
-      <button type="submit" class="primary">Giriş Yap</button>
-    </form>
-    <form id="registerForm">
-      <input type="text" id="registerUsername" placeholder="Kullanıcı Adı" required />
-      <input type="email" id="registerEmail" placeholder="E-posta" autocomplete="email" required />
+  // Başlangıçta menü ve menü tuşu gizli
+  function setMenuActive(active) {
+    if(active) {
+      menuBtn.style.display = 'block';
+      sideMenu.style.display = 'block';
+      welcomeText.textContent = `Hoşgeldiniz, ${sessionStorage.getItem('username')}`;
+    } else {
+      menuBtn.style.display = 'none';
+      sideMenu.style.display = 'none';
+      welcomeText.textContent = 'Lütfen giriş yapınız';
+      if(sideMenu.classList.contains('open')) toggleMenu();
+    }
+  }
+
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const username = loginForm.username.value.trim();
+    const password = loginForm.password.value.trim();
+    if(username && password) {
+      sessionStorage.setItem('username', username);
+      setMenuActive(true);
+      loginForm.style.display = 'none';
+    }
+  });
+
+  // Eğer session'da kullanıcı varsa direkt menüyü aktif yap
+  if(sessionStorage.getItem('username')) {
+    setMenuActive(true);
+    loginForm.style.display = 'none';
+  }
+
+  // Çıkış butonu işlevi
+  document.getElementById('navLogout').addEventListener('click', () => {
+    sessionStorage.removeItem('username');
+    setMenuActive(false);
+    loginForm.style.display = 'block';
+  });
+
+</script>
+
+</body>
+</html>
