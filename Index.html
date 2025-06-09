@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ElevenGalaxy™</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+        header {
+            padding: 1em;
+            font-size: 2em;
+            text-align: center;
+            background-color: #444;
+            color: white;
+        }
+        .container {
+            padding: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        #menu-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 2em;
+            cursor: pointer;
+            display: none;
+        }
+        .menu {
+            background: #ddd;
+            padding: 10px;
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            width: 200px;
+        }
+        .menu a {
+            display: block;
+            padding: 8px;
+            text-decoration: none;
+            color: black;
+        }
+        .menu a:hover {
+            background: #bbb;
+        }
+        .tab-btns button {
+            margin: 5px;
+            padding: 8px 12px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        ElevenGalaxy™
+    </header>
+
+    <div id="menu-btn">☰</div>
+    <div class="menu" id="side-menu">
+        <a href="#" onclick="showSection('chat')">Mesajlaşma</a>
+        <a href="#" onclick="showSection('leaderboard')">En çok konuşanlar</a>
+        <a href="#" onclick="showSection('users')">Kaydolanlar</a>
+        <a href="#" onclick="showSection('settings')">Ayarlar</a>
+        <a href="#" onclick="logout()">Çıkış Yap</a>
+    </div>
+
+    <div class="container">
+        <div class="tab-btns">
+            <button onclick="showAuthTab('login')">Giriş Yap</button>
+            <button onclick="showAuthTab('register')">Kayıt Ol</button>
+        </div>
+
+        <div id="login-tab">
+            <h2>Giriş Yap</h2>
+            <input type="email" id="login-email" placeholder="Email" /><br />
+            <input type="password" id="login-password" placeholder="Şifre" /><br />
+            <button onclick="login()">Giriş Yap</button><br />
+            <a href="#" onclick="resetPassword()">Şifremi unuttum</a>
+        </div>
+
+        <div id="register-tab" class="hidden">
+            <h2>Kayıt Ol</h2>
+            <input type="text" id="register-username" placeholder="Kullanıcı Adı" /><br />
+            <input type="email" id="register-email" placeholder="Email" /><br />
+            <input type="password" id="register-password" placeholder="Şifre" /><br />
+            <button onclick="register()">Kayıt Ol</button>
+        </div>
+
+        <div id="welcome-section" class="hidden">
+            <h2>Hoş geldin, <span id="user-email"></span>!</h2>
+        </div>
+
+        <div id="chat" class="hidden">
+            <h3>Mesajlaşma (yakında)</h3>
+        </div>
+
+        <div id="leaderboard" class="hidden">
+            <h3>En çok konuşanlar</h3>
+            <ol>
+                <li>Kullanıcı1 - 120 mesaj</li>
+                <li>Kullanıcı2 - 98 mesaj</li>
+                <li>Kullanıcı3 - 75 mesaj</li>
+            </ol>
+        </div>
+
+        <div id="users" class="hidden">
+            <h3>Kaydolanlar</h3>
+            <ul id="user-list"></ul>
+        </div>
+
+        <div id="settings" class="hidden">
+            <h3>Ayarlar</h3>
+            <label>Profil Fotoğrafı:</label>
+            <input type="file" id="profile-pic" /><br /><br />
+            <button onclick="uploadProfilePic()">Yükle</button><br /><br />
+
+            <button onclick="toggleDarkMode()">Karanlık Modu Aç/Kapat</button><br /><br />
+
+            <label>Açıklama:</label><br />
+            <textarea id="user-desc" rows="4" cols="30"></textarea><br />
+            <button onclick="saveDescription()">Kaydet</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
+            authDomain: "elevengalaxy-4ab1f.firebaseapp.com",
+            projectId: "elevengalaxy-4ab1f",
+            storageBucket: "elevengalaxy-4ab1f.appspot.com",
+            messagingSenderId: "441555249711",
+            appId: "1:441555249711:web:409b2320283d5fe46134da",
+            measurementId: "G-2MEFN03TH0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        const menuBtn = document.getElementById('menu-btn');
+        const sideMenu = document.getElementById('side-menu');
+
+        menuBtn.addEventListener('click', () => {
+            sideMenu.style.display = sideMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        function showAuthTab(tab) {
+            if (tab === 'login') {
+                document.getElementById('login-tab').classList.remove('hidden');
+                document.getElementById('register-tab').classList.add('hidden');
+            } else {
+                document.getElementById('login-tab').classList.add('hidden');
+                document.getElementById('register-tab').classList.remove('hidden');
+            }
+        }
+
+        async function register() {
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                await setDoc(doc(db, 'users', user.uid), {
+                    username: username,
+                    email: email,
+                    description: '',
+                    profilePic: ''
+                });
+                alert('Kayıt başarılı!');
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        async function logout() {
+            await signOut(auth);
+        }
+
+        async function resetPassword() {
+            const email = prompt('Şifre sıfırlama için email adresinizi girin:');
+            if (email) {
+                try {
+                    await sendPasswordResetEmail(auth, email);
+                    alert('Şifre sıfırlama maili gönderildi!');
+                } catch (error) {
+                    alert(error.message);
+                }
+            }
+        }
+
+        onAuthStateChanged(auth, async user => {
+            if (user) {
+                document.getElementById('login-tab').classList.add('hidden');
+                document.getElementById('register-tab').classList.add('hidden');
+                document.querySelector('.tab-btns').classList.add('hidden');
+                document.getElementById('welcome-section').classList.remove('hidden');
+                document.getElementById('user-email').textContent = user.email;
+                menuBtn.style.display = 'block';
+                await loadUsers();
+            } else {
+                document.getElementById('login-tab').classList.remove('hidden');
+                document.getElementById('register-tab').classList.add('hidden');
+                document.querySelector('.tab-btns').classList.remove('hidden');
+                document.getElementById('welcome-section').classList.add('hidden');
+                menuBtn.style.display = 'none';
+                sideMenu.style.display = 'none';
+            }
+        });
+
+        async function loadUsers() {
+            const querySnapshot = await getDocs(collection(db, 'users'));
+            const userList = document.getElementById('user-list');
+            userList.innerHTML = '';
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                const li = document.createElement('li');
+                li.textContent = `${data.username} (${data.email})`;
+                userList.appendChild(li);
+            });
+        }
+
+        async function uploadProfilePic() {
+            const file = document.getElementById('profile-pic').files[0];
+            if (!file) {
+                alert('Lütfen bir dosya seçin.');
+                return;
+            }
+            const user = auth.currentUser;
+            const storageRef = ref(storage, `profilePics/${user.uid}`);
+            await uploadBytes(storageRef, file);
+            alert('Profil fotoğrafı yüklendi!');
+        }
+
+        async function saveDescription() {
+            const desc = document.getElementById('user-desc').value;
+            const user = auth.currentUser;
+            const userDoc = doc(db, 'users', user.uid);
+            await setDoc(userDoc, { description: desc }, { merge: true });
+            alert('Açıklama kaydedildi!');
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.container > div').forEach(div => {
+                if (div.id !== 'welcome-section' && div.id !== 'login-tab' && div.id !== 'register-tab' && div.className !== 'tab-btns') {
+                    div.classList.add('hidden');
+                }
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
