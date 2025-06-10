@@ -350,3 +350,120 @@
   }
   /* Welcome message */
   #welcomeMsg
+<!-- JavaScript: Menü Açma/Kapatma + Tema + Sayfa Geçişleri + Firebase Auth -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
+    authDomain: "elevengalaxy-web.firebaseapp.com",
+    projectId: "elevengalaxy-web",
+    storageBucket: "elevengalaxy-web.appspot.com",
+    messagingSenderId: "1044606246550",
+    appId: "1:1044606246550:web:ba8d2759baa146f59f2cb7",
+    measurementId: "G-V4M47VJ409"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Menü açma/kapatma
+  const menuToggle = document.getElementById("menu-toggle");
+  const menu = document.getElementById("menu");
+
+  menuToggle.addEventListener("click", () => {
+    menu.classList.toggle("open");
+  });
+
+  // Tema değiştirme
+  const themeToggle = document.getElementById("theme-toggle");
+  themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark-theme");
+  });
+
+  // Sayfa geçişleri
+  const menuButtons = document.querySelectorAll("#menu button");
+  const pages = document.querySelectorAll(".page");
+
+  menuButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const target = btn.getAttribute("data-target");
+      pages.forEach((page) => {
+        page.classList.remove("active");
+      });
+      document.getElementById(target).classList.add("active");
+    });
+  });
+
+  // Kaydolma
+  const signupForm = document.getElementById("signup-form");
+  if (signupForm) {
+    signupForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("signup-email").value;
+      const password = document.getElementById("signup-password").value;
+      const username = document.getElementById("signup-username").value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Kaydolma başarılı. Giriş yapabilirsiniz.");
+          // Durumu kişisel profil sayfasına kaydetmek gibi ek özellikler yapılabilir.
+        })
+        .catch((error) => {
+          alert("Kaydolma hatası: " + error.message);
+        });
+    });
+  }
+
+  // Giriş yapma
+  const loginForm = document.getElementById("login-form");
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Giriş başarılı.");
+          window.location.reload(); // Sayfayı yenileyerek menü aktif ederiz.
+        })
+        .catch((error) => {
+          alert("Giriş hatası: " + error.message);
+        });
+    });
+  }
+
+  // Oturum durumu kontrolü
+  const userGreeting = document.getElementById("user-greeting");
+  const logoutButton = document.getElementById("logout-button");
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const displayName = user.email.split("@")[0]; // Eposta başını kullanıcı adı gibi göster
+      if (userGreeting) userGreeting.textContent = `Merhaba, ${displayName}!`;
+      if (logoutButton) logoutButton.style.display = "inline-block";
+    } else {
+      if (userGreeting) userGreeting.textContent = "";
+      if (logoutButton) logoutButton.style.display = "none";
+    }
+  });
+
+  // Çıkış yapma
+  if (logoutButton) {
+    logoutButton.addEventListener("click", () => {
+      signOut(auth)
+        .then(() => {
+          alert("Çıkış yapıldı.");
+          window.location.reload();
+        })
+        .catch((error) => {
+          alert("Çıkış hatası: " + error.message);
+        });
+    });
+  }
+</script>
+
+</body>
+</html>
