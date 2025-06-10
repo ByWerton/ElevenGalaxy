@@ -1,469 +1,188 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ElevenGalaxy Chat App</title>
-<style>
-  /* Reset & basics */
-  body, html {
-    margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f0f0f0; color: #222; transition: background-color 0.4s ease, color 0.4s ease;
-    overflow-x: hidden;
-  }
-  body.dark {
-    background: #121212; color: #eee;
-  }
-  a { text-decoration: none; color: inherit; }
-  button {
-    cursor: pointer;
-    background: #2979ff; border: none; border-radius: 4px;
-    color: white; padding: 8px 14px; font-weight: 600;
-    transition: background-color 0.3s ease;
-  }
-  button:hover { background: #0059c1; }
-  input, select {
-    padding: 8px; margin: 5px 0 10px 0;
-    border: 1.5px solid #aaa; border-radius: 5px;
-    width: 100%; box-sizing: border-box;
-    font-size: 14px;
-    background: white; color: black;
-    transition: border-color 0.3s ease;
-  }
-  body.dark input, body.dark select {
-    background: #222; color: #ddd; border-color: #555;
-  }
-  input:focus, select:focus {
-    border-color: #2979ff; outline: none;
-  }
-  /* Spinner */
-  #loadingSpinner {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    display: none;
-    z-index: 9999;
-  }
-  .spinner {
-    border: 6px solid #eee;
-    border-top: 6px solid #2979ff;
-    border-radius: 50%;
-    width: 50px; height: 50px;
-    animation: spin 1s linear infinite;
-  }
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  /* Layout */
-  #app {
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-  }
-  /* Sidebar menu */
-  #sidebar {
-    position: fixed;
-    left: -220px;
-    top: 0; bottom: 0;
-    width: 220px;
-    background: #2979ff;
-    color: white;
-    padding: 20px 10px;
-    box-sizing: border-box;
-    transition: left 0.3s ease;
-    z-index: 999;
-    font-size: 12px;
-  }
-  #sidebar.open {
-    left: 0;
-  }
-  #sidebar.dark {
-    background: #003977;
-  }
-  #sidebar h2 {
-    margin: 0 0 15px 10px;
-    font-weight: 700;
-  }
-  #sidebar button, #sidebar label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-    gap: 8px;
-  }
-  #sidebar button {
-    width: 100%;
-    font-size: 13px;
-  }
-  #sidebar .menu-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 8px 0;
-    cursor: pointer;
-    padding: 8px 10px;
-    border-radius: 5px;
-    user-select: none;
-    transition: background-color 0.2s ease;
-  }
-  #sidebar .menu-item:hover {
-    background: rgba(255 255 255 / 0.2);
-  }
-  #sidebar .menu-icon {
-    width: 18px; height: 18px;
-    fill: white;
-    flex-shrink: 0;
-  }
-  /* Hamburger button */
-  #hamburger {
-    position: fixed;
-    top: 15px; left: 15px;
-    z-index: 1000;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    width: 30px; height: 25px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  #hamburger span {
-    display: block;
-    height: 3px;
-    background: #2979ff;
-    border-radius: 2px;
-    transition: background-color 0.3s ease;
-  }
-  body.dark #hamburger span {
-    background: #eee;
-  }
-  /* Main content */
-  #main {
-    flex-grow: 1;
-    margin-left: 0;
-    padding: 20px;
-    transition: margin-left 0.3s ease;
-    overflow-y: auto;
-    min-height: 100vh;
-    box-sizing: border-box;
-  }
-  #sidebar.open + #main {
-    margin-left: 220px;
-  }
-  /* Header */
-  #header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  #header h1 {
-    font-weight: 700;
-    font-size: 22px;
-    user-select: none;
-  }
-  #header small {
-    font-weight: 600;
-    color: #555;
-  }
-  body.dark #header small {
-    color: #bbb;
-  }
-  /* Forms */
-  .form-container {
-    max-width: 400px;
-    margin: auto;
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
-    color: black;
-  }
-  body.dark .form-container {
-    background: #222;
-    color: #ddd;
-  }
-  .form-container h3 {
-    margin-top: 0;
-    font-weight: 700;
-  }
-  .form-group {
-    margin-bottom: 15px;
-  }
-  .form-group label {
-    font-weight: 600;
-  }
-  .error-msg {
-    color: #e53935;
-    font-size: 13px;
-    margin: 5px 0 0 0;
-  }
-  /* Message board */
-  #messagesContainer {
-    max-width: 700px;
-    margin: 0 auto 50px auto;
-    background: white;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-    color: black;
-  }
-  body.dark #messagesContainer {
-    background: #222;
-    color: #ddd;
-  }
-  #messagesContainer h3 {
-    margin: 0 0 10px 0;
-    font-weight: 700;
-    font-size: 18px;
-  }
-  .message {
-    border-bottom: 1px solid #ddd;
-    padding: 10px 0;
-    display: flex;
-    gap: 10px;
-  }
-  body.dark .message {
-    border-color: #444;
-  }
-  .message:last-child {
-    border-bottom: none;
-  }
-  .message .avatar {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: #bbb;
-    flex-shrink: 0;
-    overflow: hidden;
-  }
-  .message .avatar img {
-    width: 100%; height: 100%; object-fit: cover;
-  }
-  .message .content {
-    flex-grow: 1;
-  }
-  .message .username {
-    font-weight: 700;
-    font-size: 14px;
-  }
-  .message .text {
-    font-size: 13px;
-    margin-top: 3px;
-    white-space: pre-wrap;
-  }
-  .message .time {
-    font-size: 11px;
-    color: #999;
-    margin-left: 10px;
-    white-space: nowrap;
-  }
-  body.dark .message .time {
-    color: #aaa;
-  }
-  /* Input message */
-  #sendMessageForm {
-    max-width: 700px;
-    margin: 10px auto 30px auto;
-    display: flex;
-    gap: 10px;
-  }
-  #sendMessageForm input[type="text"] {
-    flex-grow: 1;
-    font-size: 15px;
-  }
-  /* User list */
-  #usersList {
-    max-width: 700px;
-    margin: 0 auto 30px auto;
-    background: white;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-    color: black;
-    font-size: 13px;
-  }
-  body.dark #usersList {
-    background: #222;
-    color: #ddd;
-  }
-  #usersList h3 {
-    margin: 0 0 10px 0;
-    font-weight: 700;
-  }
-  #usersList ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  #usersList li {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 5px 0;
-    border-bottom: 1px solid #ddd;
-  }
-  body.dark #usersList li {
-    border-color: #444;
-  }
-  #usersList li:last-child {
-    border-bottom: none;
-  }
-  #usersList .user-avatar {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: #bbb;
-    flex-shrink: 0;
-  }
-  #usersList .user-avatar img {
-    width: 100%; height: 100%; object-fit: cover;
-  }
-  /* Settings */
-  #settingsContainer {
-    max-width: 400px;
-    margin: 30px auto;
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
-    color: black;
-  }
-  body.dark #settingsContainer {
-    background: #222;
-    color: #ddd;
-  }
-  #settingsContainer h3 {
-    margin-top: 0;
-    font-weight: 700;
-  }
-  #settingsContainer label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
-  }
-  #settingsContainer input[type="file"] {
-    padding: 5px 0;
-  }
-  #settingsContainer button {
-    width: 100%;
-    margin-top: 15px;
-  }
-  /* Welcome message */
-  #welcomeMsg
-<!-- JavaScript: Menü Açma/Kapatma + Tema + Sayfa Geçişleri + Firebase Auth -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ElevenGalaxy 🚀</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      display: flex;
+      background-color: #fff;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .dark-mode {
+      background-color: #121212;
+      color: #eee;
+    }
+    .sidebar {
+      width: 250px;
+      background: #333;
+      color: white;
+      height: 100vh;
+      position: fixed;
+      left: -250px;
+      transition: left 0.3s;
+      display: flex;
+      flex-direction: column;
+      padding-top: 20px;
+    }
+    .sidebar.open {
+      left: 0;
+    }
+    .sidebar button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 15px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .content {
+      margin-left: 0;
+      padding: 20px;
+      transition: margin-left 0.3s;
+      width: 100%;
+    }
+    .sidebar.open ~ .content {
+      margin-left: 250px;
+    }
+    .topbar {
+      background: #222;
+      color: white;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .menu-btn {
+      font-size: 24px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+    .active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar" id="sidebar">
+    <button onclick="showPage('durum')">📋 Durum</button>
+    <button onclick="showPage('leaderboard')">🏆 Leaderboard</button>
+    <button onclick="showPage('profil')">👤 Profil</button>
+    <button onclick="showPage('mesajlar')">💬 Mesajlaşma</button>
+    <button onclick="showPage('ayarlar')">⚙️ Ayarlar</button>
+    <button onclick="logout()">🚪 Çıkış Yap</button>
+  </div>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
-    authDomain: "elevengalaxy-web.firebaseapp.com",
-    projectId: "elevengalaxy-web",
-    storageBucket: "elevengalaxy-web.appspot.com",
-    messagingSenderId: "1044606246550",
-    appId: "1:1044606246550:web:ba8d2759baa146f59f2cb7",
-    measurementId: "G-V4M47VJ409"
-  };
+  <div class="content" id="content">
+    <div class="topbar">
+      <span class="menu-btn" onclick="toggleSidebar()">☰</span>
+      <span id="welcome">Merhaba, Giriş Yapmadınız!</span>
+    </div>
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+    <div id="pages">
+      <div id="durum" class="hidden">Burada kullanıcı durumu olacak.</div>
+      <div id="leaderboard" class="hidden">Leaderboard gösterilecek.</div>
+      <div id="profil" class="hidden">Profil bilgileri burada olacak.</div>
+      <div id="mesajlar" class="hidden">Mesajlaşma alanı buraya gelecek.</div>
+      <div id="ayarlar" class="hidden">
+        <button onclick="toggleDarkMode()">🌙 Karanlık Mod Aç/Kapat</button>
+      </div>
+    </div>
 
-  // Menü açma/kapatma
-  const menuToggle = document.getElementById("menu-toggle");
-  const menu = document.getElementById("menu");
+    <div id="auth">
+      <h2>Giriş Yap / Kayıt Ol</h2>
+      <input type="email" id="email" placeholder="E-posta"><br>
+      <input type="password" id="password" placeholder="Şifre"><br>
+      <button onclick="login()">Giriş Yap</button>
+      <button onclick="register()">Kayıt Ol</button>
+    </div>
+  </div>
 
-  menuToggle.addEventListener("click", () => {
-    menu.classList.toggle("open");
-  });
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-database.js";
 
-  // Tema değiştirme
-  const themeToggle = document.getElementById("theme-toggle");
-  themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark-theme");
-  });
+    const firebaseConfig = {
+      apiKey: "AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
+      authDomain: "elevengalaxy-web.firebaseapp.com",
+      projectId: "elevengalaxy-web",
+      storageBucket: "elevengalaxy-web.appspot.com",
+      messagingSenderId: "1044606246550",
+      appId: "1:1044606246550:web:ba8d2759baa146f59f2cb7",
+      measurementId: "G-V4M47VJ409",
+      databaseURL: "https://elevengalaxy-web-default-rtdb.firebaseio.com/"
+    };
 
-  // Sayfa geçişleri
-  const menuButtons = document.querySelectorAll("#menu button");
-  const pages = document.querySelectorAll(".page");
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getDatabase(app);
 
-  menuButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const target = btn.getAttribute("data-target");
-      pages.forEach((page) => {
-        page.classList.remove("active");
-      });
-      document.getElementById(target).classList.add("active");
-    });
-  });
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
 
-  // Kaydolma
-  const signupForm = document.getElementById("signup-form");
-  if (signupForm) {
-    signupForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const email = document.getElementById("signup-email").value;
-      const password = document.getElementById("signup-password").value;
-      const username = document.getElementById("signup-username").value;
+    function showPage(page) {
+      document.querySelectorAll('#pages > div').forEach(div => div.classList.add('hidden'));
+      document.getElementById(page).classList.remove('hidden');
+    }
 
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          alert("Kaydolma başarılı. Giriş yapabilirsiniz.");
-          // Durumu kişisel profil sayfasına kaydetmek gibi ek özellikler yapılabilir.
-        })
-        .catch((error) => {
-          alert("Kaydolma hatası: " + error.message);
-        });
-    });
-  }
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
 
-  // Giriş yapma
-  const loginForm = document.getElementById("login-form");
-  if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const email = document.getElementById("login-email").value;
-      const password = document.getElementById("login-password").value;
-
+    function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
       signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          alert("Giriş başarılı.");
-          window.location.reload(); // Sayfayı yenileyerek menü aktif ederiz.
+        .then(userCredential => {
+          document.getElementById('auth').style.display = 'none';
+          document.getElementById('welcome').textContent = `Merhaba, ${email}!`;
         })
-        .catch((error) => {
+        .catch(error => {
           alert("Giriş hatası: " + error.message);
         });
-    });
-  }
-
-  // Oturum durumu kontrolü
-  const userGreeting = document.getElementById("user-greeting");
-  const logoutButton = document.getElementById("logout-button");
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const displayName = user.email.split("@")[0]; // Eposta başını kullanıcı adı gibi göster
-      if (userGreeting) userGreeting.textContent = `Merhaba, ${displayName}!`;
-      if (logoutButton) logoutButton.style.display = "inline-block";
-    } else {
-      if (userGreeting) userGreeting.textContent = "";
-      if (logoutButton) logoutButton.style.display = "none";
     }
-  });
 
-  // Çıkış yapma
-  if (logoutButton) {
-    logoutButton.addEventListener("click", () => {
-      signOut(auth)
-        .then(() => {
-          alert("Çıkış yapıldı.");
-          window.location.reload();
+    function register() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(userCredential => {
+          const userId = userCredential.user.uid;
+          set(ref(db, 'users/' + userId), {
+            email: email,
+            durum: "Merhaba! Henüz durum yok."
+          });
+          document.getElementById('auth').style.display = 'none';
+          document.getElementById('welcome').textContent = `Merhaba, ${email}!`;
         })
-        .catch((error) => {
-          alert("Çıkış hatası: " + error.message);
+        .catch(error => {
+          alert("Kayıt hatası: " + error.message);
         });
-    });
-  }
-</script>
+    }
 
+    function logout() {
+      signOut(auth).then(() => {
+        document.getElementById('auth').style.display = 'block';
+        document.getElementById('welcome').textContent = "Merhaba, Giriş Yapmadınız!";
+      });
+    }
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        document.getElementById('auth').style.display = 'none';
+        document.getElementById('welcome').textContent = `Merhaba, ${user.email}!`;
+      } else {
+        document.getElementById('auth').style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>
