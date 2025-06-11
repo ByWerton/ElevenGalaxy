@@ -1,188 +1,153 @@
-<!DOCTYPE html>
+# Save the final HTML code into a file to be downloaded by the user
+html_content = '''<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ElevenGalaxy 🚀</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ElevenGalaxy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
   <style>
-    body {
-      font-family: sans-serif;
-      margin: 0;
-      display: flex;
-      background-color: #fff;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    .dark-mode {
-      background-color: #121212;
-      color: #eee;
-    }
-    .sidebar {
-      width: 250px;
-      background: #333;
-      color: white;
-      height: 100vh;
-      position: fixed;
-      left: -250px;
-      transition: left 0.3s;
-      display: flex;
-      flex-direction: column;
-      padding-top: 20px;
-    }
-    .sidebar.open {
-      left: 0;
-    }
-    .sidebar button {
-      background: none;
-      border: none;
-      color: white;
-      padding: 15px;
-      text-align: left;
-      cursor: pointer;
-    }
-    .content {
-      margin-left: 0;
-      padding: 20px;
-      transition: margin-left 0.3s;
-      width: 100%;
-    }
-    .sidebar.open ~ .content {
-      margin-left: 250px;
-    }
-    .topbar {
-      background: #222;
-      color: white;
-      padding: 10px;
-      display: flex;
-      align-items: center;
-    }
-    .menu-btn {
-      font-size: 24px;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-    .hidden {
-      display: none;
-    }
-    .active {
-      display: block;
-    }
+    /* Reset & base styles */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background: #121212; color: #fff; overflow-x: hidden; }
+
+    /* Loading animation */
+    #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      display: flex; justify-content: center; align-items: center;
+      background-color: #121212; z-index: 9999; }
+    .spinner { border: 6px solid #333; border-top: 6px solid #09f;
+      border-radius: 50%; width: 50px; height: 50px;
+      animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* Menu styles */
+    .menu { position: fixed; top: 0; left: 0; width: 70px; height: 100%;
+      background: #1e1e1e; display: flex; flex-direction: column;
+      align-items: center; padding: 1rem 0; z-index: 10; }
+    .menu img { width: 40px; height: 40px; margin: 1rem 0; cursor: pointer; }
+
+    /* Content */
+    .content { margin-left: 70px; padding: 1rem; transition: all 0.3s ease; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Dark mode toggle */
+    .toggle { margin-top: 1rem; cursor: pointer; }
+
+    /* Inputs */
+    input, button { padding: 0.5rem; margin: 0.5rem 0; border: none; border-radius: 5px; }
+
+    .auth { max-width: 300px; margin: 5rem auto; display: flex; flex-direction: column; }
+
+    button { background: #09f; color: white; cursor: pointer; }
+
   </style>
 </head>
 <body>
-  <div class="sidebar" id="sidebar">
-    <button onclick="showPage('durum')">📋 Durum</button>
-    <button onclick="showPage('leaderboard')">🏆 Leaderboard</button>
-    <button onclick="showPage('profil')">👤 Profil</button>
-    <button onclick="showPage('mesajlar')">💬 Mesajlaşma</button>
-    <button onclick="showPage('ayarlar')">⚙️ Ayarlar</button>
-    <button onclick="logout()">🚪 Çıkış Yap</button>
-  </div>
 
-  <div class="content" id="content">
-    <div class="topbar">
-      <span class="menu-btn" onclick="toggleSidebar()">☰</span>
-      <span id="welcome">Merhaba, Giriş Yapmadınız!</span>
-    </div>
+<div id="loader"><div class="spinner"></div></div>
 
-    <div id="pages">
-      <div id="durum" class="hidden">Burada kullanıcı durumu olacak.</div>
-      <div id="leaderboard" class="hidden">Leaderboard gösterilecek.</div>
-      <div id="profil" class="hidden">Profil bilgileri burada olacak.</div>
-      <div id="mesajlar" class="hidden">Mesajlaşma alanı buraya gelecek.</div>
-      <div id="ayarlar" class="hidden">
-        <button onclick="toggleDarkMode()">🌙 Karanlık Mod Aç/Kapat</button>
-      </div>
-    </div>
+<div class="menu">
+  <img src="https://cdn-icons-png.flaticon.com/512/1946/1946436.png" alt="Durum" onclick="showPage('durum')">
+  <img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png" alt="Leaderboard" onclick="showPage('leaderboard')">
+  <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profil" onclick="showPage('profil')">
+  <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Mesajlaşma" onclick="showPage('mesajlar')">
+  <img src="https://cdn-icons-png.flaticon.com/512/2099/2099058.png" alt="Ayarlar" onclick="showPage('ayarlar')">
+</div>
 
-    <div id="auth">
-      <h2>Giriş Yap / Kayıt Ol</h2>
-      <input type="email" id="email" placeholder="E-posta"><br>
-      <input type="password" id="password" placeholder="Şifre"><br>
+<div class="content">
+  <div id="authPage" class="page active">
+    <div class="auth">
+      <h2>Giriş Yap</h2>
+      <input type="email" id="email" placeholder="E-posta">
+      <input type="password" id="password" placeholder="Şifre">
       <button onclick="login()">Giriş Yap</button>
-      <button onclick="register()">Kayıt Ol</button>
+      <button onclick="signup()">Kayıt Ol</button>
+      <p id="error" style="color: red;"></p>
     </div>
   </div>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-database.js";
+  <div id="durum" class="page"><img src="https://drive.google.com/uc?id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9kC" width="100%"></div>
+  <div id="leaderboard" class="page"><img src="https://drive.google.com/uc?id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i" width="100%"></div>
+  <div id="profil" class="page"><img src="https://drive.google.com/uc?id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK" width="100%"></div>
+  <div id="mesajlar" class="page"><img src="https://drive.google.com/uc?id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-" width="100%"></div>
+  <div id="ayarlar" class="page">
+    <img src="https://drive.google.com/uc?id=15mSBMsBaYg3wgPBEnVVJV0jLOuMlSll8" width="100%">
+    <div class="toggle" onclick="toggleDarkMode()">🌙 Karanlık Mod</div>
+    <button onclick="logout()">Çıkış Yap</button>
+  </div>
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
-      authDomain: "elevengalaxy-web.firebaseapp.com",
-      projectId: "elevengalaxy-web",
-      storageBucket: "elevengalaxy-web.appspot.com",
-      messagingSenderId: "1044606246550",
-      appId: "1:1044606246550:web:ba8d2759baa146f59f2cb7",
-      measurementId: "G-V4M47VJ409",
-      databaseURL: "https://elevengalaxy-web-default-rtdb.firebaseio.com/"
-    };
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
-    const db = getDatabase(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
+    authDomain: "elevengalaxy-web.firebaseapp.com",
+    projectId: "elevengalaxy-web",
+    storageBucket: "elevengalaxy-web.appspot.com",
+    messagingSenderId: "1044606246550",
+    appId: "1:1044606246550:web:ba8d2759baa146f59f2cb7",
+    measurementId: "G-V4M47VJ409"
+  };
 
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('open');
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(page).classList.add('active');
+  }
+
+  window.showPage = showPage;
+
+  function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => location.reload())
+      .catch(e => document.getElementById("error").innerText = e.message);
+  }
+
+  function signup() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => location.reload())
+      .catch(e => document.getElementById("error").innerText = e.message);
+  }
+
+  function logout() {
+    signOut(auth).then(() => location.reload());
+  }
+
+  window.login = login;
+  window.signup = signup;
+  window.logout = logout;
+
+  onAuthStateChanged(auth, (user) => {
+    document.getElementById("loader").style.display = "none";
+    if (user) {
+      document.getElementById("authPage").classList.remove("active");
+      showPage('durum');
+    } else {
+      showPage('authPage');
     }
+  });
 
-    function showPage(page) {
-      document.querySelectorAll('#pages > div').forEach(div => div.classList.add('hidden'));
-      document.getElementById(page).classList.remove('hidden');
-    }
-
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-    }
-
-    function login() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      signInWithEmailAndPassword(auth, email, password)
-        .then(userCredential => {
-          document.getElementById('auth').style.display = 'none';
-          document.getElementById('welcome').textContent = `Merhaba, ${email}!`;
-        })
-        .catch(error => {
-          alert("Giriş hatası: " + error.message);
-        });
-    }
-
-    function register() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(userCredential => {
-          const userId = userCredential.user.uid;
-          set(ref(db, 'users/' + userId), {
-            email: email,
-            durum: "Merhaba! Henüz durum yok."
-          });
-          document.getElementById('auth').style.display = 'none';
-          document.getElementById('welcome').textContent = `Merhaba, ${email}!`;
-        })
-        .catch(error => {
-          alert("Kayıt hatası: " + error.message);
-        });
-    }
-
-    function logout() {
-      signOut(auth).then(() => {
-        document.getElementById('auth').style.display = 'block';
-        document.getElementById('welcome').textContent = "Merhaba, Giriş Yapmadınız!";
-      });
-    }
-
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        document.getElementById('auth').style.display = 'none';
-        document.getElementById('welcome').textContent = `Merhaba, ${user.email}!`;
-      } else {
-        document.getElementById('auth').style.display = 'block';
-      }
-    });
-  </script>
+  function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+  }
+  window.toggleDarkMode = toggleDarkMode;
+</script>
 </body>
-</html>
+</html>'''
+
+# Save to file
+file_path = "/mnt/data/ElevenGalaxy_Prototip1.html"
+with open(file_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+file_path
