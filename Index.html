@@ -1,5 +1,4 @@
-# Save the final HTML code into a file to be downloaded by the user
-html_content = '''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
@@ -8,40 +7,47 @@ html_content = '''<!DOCTYPE html>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
   <style>
-    /* Reset & base styles */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
     body { background: #121212; color: #fff; overflow-x: hidden; }
 
-    /* Loading animation */
-    #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    #loader {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       display: flex; justify-content: center; align-items: center;
-      background-color: #121212; z-index: 9999; }
-    .spinner { border: 6px solid #333; border-top: 6px solid #09f;
+      background-color: #121212; z-index: 9999;
+    }
+    .spinner {
+      border: 6px solid #333; border-top: 6px solid #09f;
       border-radius: 50%; width: 50px; height: 50px;
-      animation: spin 1s linear infinite; }
+      animation: spin 1s linear infinite;
+    }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
-    /* Menu styles */
-    .menu { position: fixed; top: 0; left: 0; width: 70px; height: 100%;
+    .menu {
+      position: fixed; top: 0; left: 0; width: 70px; height: 100%;
       background: #1e1e1e; display: flex; flex-direction: column;
-      align-items: center; padding: 1rem 0; z-index: 10; }
-    .menu img { width: 40px; height: 40px; margin: 1rem 0; cursor: pointer; }
+      align-items: center; padding: 1rem 0; z-index: 10;
+    }
+    .menu img {
+      width: 40px; height: 40px; margin: 1rem 0; cursor: pointer;
+    }
 
-    /* Content */
     .content { margin-left: 70px; padding: 1rem; transition: all 0.3s ease; }
     .page { display: none; }
     .page.active { display: block; }
 
-    /* Dark mode toggle */
     .toggle { margin-top: 1rem; cursor: pointer; }
 
-    /* Inputs */
-    input, button { padding: 0.5rem; margin: 0.5rem 0; border: none; border-radius: 5px; }
+    input, button {
+      padding: 0.5rem; margin: 0.5rem 0;
+      border: none; border-radius: 5px;
+    }
 
-    .auth { max-width: 300px; margin: 5rem auto; display: flex; flex-direction: column; }
+    .auth {
+      max-width: 300px; margin: 5rem auto;
+      display: flex; flex-direction: column;
+    }
 
     button { background: #09f; color: white; cursor: pointer; }
-
   </style>
 </head>
 <body>
@@ -68,10 +74,22 @@ html_content = '''<!DOCTYPE html>
     </div>
   </div>
 
-  <div id="durum" class="page"><img src="https://drive.google.com/uc?id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9kC" width="100%"></div>
-  <div id="leaderboard" class="page"><img src="https://drive.google.com/uc?id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i" width="100%"></div>
-  <div id="profil" class="page"><img src="https://drive.google.com/uc?id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK" width="100%"></div>
-  <div id="mesajlar" class="page"><img src="https://drive.google.com/uc?id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-" width="100%"></div>
+  <div id="durum" class="page">
+    <img src="https://drive.google.com/uc?id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9kC" width="100%">
+  </div>
+
+  <div id="leaderboard" class="page">
+    <img src="https://drive.google.com/uc?id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i" width="100%">
+  </div>
+
+  <div id="profil" class="page">
+    <img src="https://drive.google.com/uc?id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK" width="100%">
+  </div>
+
+  <div id="mesajlar" class="page">
+    <img src="https://drive.google.com/uc?id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-" width="100%">
+  </div>
+
   <div id="ayarlar" class="page">
     <img src="https://drive.google.com/uc?id=15mSBMsBaYg3wgPBEnVVJV0jLOuMlSll8" width="100%">
     <div class="toggle" onclick="toggleDarkMode()">🌙 Karanlık Mod</div>
@@ -81,7 +99,13 @@ html_content = '''<!DOCTYPE html>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
@@ -143,11 +167,4 @@ html_content = '''<!DOCTYPE html>
   window.toggleDarkMode = toggleDarkMode;
 </script>
 </body>
-</html>'''
-
-# Save to file
-file_path = "/mnt/data/ElevenGalaxy_Prototip1.html"
-with open(file_path, "w", encoding="utf-8") as f:
-    f.write(html_content)
-
-file_path
+</html>
