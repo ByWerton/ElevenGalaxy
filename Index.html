@@ -1,35 +1,45 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ElevenGalaxy</title>
-<style>
-  * {margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif;}
-  body {background: #121212; color: #fff; overflow-x: hidden;}
-  .menu {
-    position: fixed; top: 0; left: 0; width: 70px; height: 100%;
-    background: #1e1e1e; display: flex; flex-direction: column;
-    align-items: center; padding: 1rem 0; z-index: 10;
-  }
-  .menu img {width: 40px; height: 40px; margin: 1rem 0; cursor: pointer;}
-  .content {margin-left: 70px; padding: 1rem;}
-  .page {display: none;}
-  .page.active {display: block;}
-  .auth {max-width: 300px; margin: 5rem auto; display: flex; flex-direction: column;}
-  input, button {padding: 0.5rem; margin: 0.5rem 0; border: none; border-radius: 5px;}
-  button {background: #09f; color: #fff; cursor: pointer;}
-  #error {color: red;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ElevenGalaxy</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #121212; color: #fff; overflow-x: hidden; }
+    #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      display: flex; justify-content: center; align-items: center;
+      background: #121212; z-index: 9999; }
+    .spinner { border: 6px solid #333; border-top: 6px solid #09f;
+      border-radius: 50%; width: 50px; height: 50px;
+      animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    .menu { position: fixed; top: 0; left: 0; width: 70px; height: 100%;
+      background: #1e1e1e; display: flex; flex-direction: column;
+      align-items: center; padding: 1rem 0; z-index: 10; }
+    .menu img { width: 40px; height: 40px; margin: 1rem 0; cursor: pointer; }
+
+    .content { margin-left: 70px; padding: 1rem; transition: all 0.3s ease; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .toggle { margin-top: 1rem; cursor: pointer; }
+    input, button { padding: 0.5rem; margin: 0.5rem 0; border: none; border-radius: 5px; }
+    .auth { max-width: 300px; margin: 5rem auto; display: flex; flex-direction: column; }
+    button { background: #09f; color: white; cursor: pointer; }
+  </style>
 </head>
 <body>
+
+<div id="loader"><div class="spinner"></div></div>
 
 <div class="menu">
   <img src="https://drive.google.com/uc?id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9kC" alt="Durum" onclick="showPage('durum')">
   <img src="https://drive.google.com/uc?id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i" alt="Leaderboard" onclick="showPage('leaderboard')">
   <img src="https://drive.google.com/uc?id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK" alt="Profil" onclick="showPage('profil')">
-  <img src="https://drive.google.com/uc?id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-" alt="Mesajlar" onclick="showPage('mesajlar')">
-  <img src="https://drive.google.com/uc?id=15mSBMsBaYg3wgPBEnVVJV0jLOuMlSll8" alt="Ayarlar" id="settingsBtn">
+  <img src="https://drive.google.com/uc?id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-" alt="Mesajlaşma" onclick="showPage('mesajlar')">
+  <img src="https://drive.google.com/uc?id=15mSBMsBaYg3wgPBEnVVJV0jLOuMlSll8" alt="Ayarlar" onclick="showPage('ayarlar')">
 </div>
 
 <div class="content">
@@ -40,97 +50,84 @@
       <input type="password" id="password" placeholder="Şifre">
       <button onclick="login()">Giriş Yap</button>
       <button onclick="signup()">Kayıt Ol</button>
-      <p id="error"></p>
+      <p id="error" style="color: red;"></p>
     </div>
   </div>
 
-  <div id="durum" class="page">
-    <img src="https://drive.google.com/uc?id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9kC" width="100%">
-  </div>
-
-  <div id="leaderboard" class="page">
-    <img src="https://drive.google.com/uc?id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i" width="100%">
-  </div>
-
-  <div id="profil" class="page">
-    <img src="https://drive.google.com/uc?id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK" width="100%">
-  </div>
-
-  <div id="mesajlar" class="page">
-    <img src="https://drive.google.com/uc?id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-" width="100%">
-  </div>
-
+  <div id="durum" class="page"><img src="https://drive.google.com/uc?id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9kC" width="100%"></div>
+  <div id="leaderboard" class="page"><img src="https://drive.google.com/uc?id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i" width="100%"></div>
+  <div id="profil" class="page"><img src="https://drive.google.com/uc?id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK" width="100%"></div>
+  <div id="mesajlar" class="page"><img src="https://drive.google.com/uc?id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-" width="100%"></div>
   <div id="ayarlar" class="page">
     <img src="https://drive.google.com/uc?id=15mSBMsBaYg3wgPBEnVVJV0jLOuMlSll8" width="100%">
-    <button id="logoutBtn" style="margin-top: 1rem;">Çıkış Yap</button>
+    <div class="toggle" onclick="toggleDarkMode()">🌙 Karanlık Mod</div>
+    <button onclick="logout()">Çıkış Yap</button>
   </div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
-  authDomain: "elevengalaxy-web.firebaseapp.com",
-  projectId: "elevengalaxy-web",
-  storageBucket: "elevengalaxy-web.appspot.com",
-  messagingSenderId: "1044606246550",
-  appId: "1:1044606246550:web:ba8d2759baa146f59f2cb7"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyC05FCX8S8uU0a1airGrjPPKiMpO4bwT7U",
+    authDomain: "elevengalaxy-web.firebaseapp.com",
+    projectId: "elevengalaxy-web",
+    storageBucket: "elevengalaxy-web.appspot.com",
+    messagingSenderId: "1044606246550",
+    appId: "1:1044606246550:web:ba8d2759baa146f59f2cb7",
+    measurementId: "G-V4M47VJ409"
+  };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-function showPage(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(page).classList.add('active');
-}
-
-function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => location.reload())
-    .catch(e => document.getElementById("error").innerText = e.message);
-}
-
-function signup() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  createUserWithEmailAndPassword(auth, email, password)
-    .then(() => location.reload())
-    .catch(e => document.getElementById("error").innerText = e.message);
-}
-
-function logout() {
-  signOut(auth).then(() => location.reload());
-}
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    document.getElementById("authPage").classList.remove("active");
-    showPage('durum');
-  } else {
-    showPage('authPage');
+  function showPage(page) {
+    const user = auth.currentUser;
+    if (!user && page !== "authPage") return;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(page).classList.add('active');
   }
-});
+  window.showPage = showPage;
 
-document.getElementById("settingsBtn").addEventListener("click", () => {
-  if (auth.currentUser) {
-    showPage('ayarlar');
-  } else {
-    alert("Lütfen önce giriş yapın.");
+  function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => location.reload())
+      .catch(e => document.getElementById("error").innerText = e.message);
   }
-});
 
-onAuthStateChanged(auth, (user) => {
-  document.getElementById("logoutBtn").style.display = user ? "block" : "none";
-});
+  function signup() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => location.reload())
+      .catch(e => document.getElementById("error").innerText = e.message);
+  }
 
-window.login = login;
-window.signup = signup;
-window.logout = logout;
+  function logout() {
+    signOut(auth).then(() => location.reload());
+  }
+
+  window.login = login;
+  window.signup = signup;
+  window.logout = logout;
+
+  onAuthStateChanged(auth, (user) => {
+    document.getElementById("loader").style.display = "none";
+    if (user) {
+      document.getElementById("authPage").classList.remove("active");
+      showPage('durum');
+    } else {
+      showPage('authPage');
+    }
+  });
+
+  function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+  }
+  window.toggleDarkMode = toggleDarkMode;
 </script>
 
 </body>
