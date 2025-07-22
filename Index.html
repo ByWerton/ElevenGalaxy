@@ -1,81 +1,107 @@
-<!DOCTYPE html><html lang="tr">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brando Giriş</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Brando Giriş & Kayıt</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; height: 100%; overflow: hidden; font-family: sans-serif; }
-    body.dark { background-color: #121212; color: #fff; }#loader {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  z-index: 9999;
-}
+    body.dark { background-color: #121212; color: #fff; }
 
-#auth-container, #main-container {
-  display: none;
-  width: 100%;
-  height: 100%;
-}
+    #loader {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      z-index: 9999;
+    }
 
-#menu {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 120px;
-  height: 100%;
-  background: url('https://drive.google.com/uc?export=view&id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat center center / cover;
-  z-index: 10;
-}
+    #auth-container, #main-container {
+      display: none;
+      width: 100%;
+      height: 100%;
+    }
 
-.content {
-  margin-left: 120px;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  transition: background-image 0.3s;
-}
+    #menu {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 120px;
+      height: 100%;
+      background: url('https://drive.google.com/uc?export=view&id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat center center / cover;
+      z-index: 10;
+    }
 
-.button-area {
-  position: absolute;
-  z-index: 20;
-  cursor: pointer;
-}
+    .content {
+      margin-left: 120px;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      transition: background-image 0.3s;
+    }
 
-#login-form {
-  text-align: center;
-  padding-top: 100px;
-}
+    .button-area {
+      position: absolute;
+      z-index: 20;
+      cursor: pointer;
+    }
 
-#login-form input {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
-  width: 80%;
-}
+    #login-form, #signup-form {
+      text-align: center;
+      padding-top: 50px;
+      max-width: 300px;
+      margin: auto;
+    }
 
-#login-form button {
-  padding: 10px 20px;
-}
+    #login-form input, #signup-form input {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 100%;
+    }
 
+    #login-form button, #signup-form button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    #toggle-signup {
+      margin-top: 15px;
+      cursor: pointer;
+      color: #0066cc;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <div id="loader">Yükleniyor...</div>  <div id="auth-container">
+  <div id="loader">Yükleniyor...</div>
+
+  <div id="auth-container">
     <form id="login-form">
       <h2>Giriş Yap</h2>
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Şifre" required />
+      <input type="email" id="login-email" placeholder="Email" required />
+      <input type="password" id="login-password" placeholder="Şifre" required />
       <button type="submit">Giriş Yap</button>
+      <div id="toggle-signup">Kayıt Ol</div>
     </form>
-  </div>  <div id="main-container">
+
+    <form id="signup-form" style="display:none;">
+      <h2>Kayıt Ol</h2>
+      <input type="email" id="signup-email" placeholder="Email" required />
+      <input type="password" id="signup-password" placeholder="Şifre" required />
+      <button type="submit">Kayıt Ol</button>
+      <div id="toggle-login" style="margin-top: 15px; cursor: pointer; color: #0066cc; text-decoration: underline;">Giriş Yap</div>
+    </form>
+  </div>
+
+  <div id="main-container">
     <div id="menu"></div>
     <div class="content" id="content"></div>
     <div class="button-area" style="top: 100px; left: 20px; width: 80px; height: 40px;" onclick="changePage('durum')"></div>
@@ -83,12 +109,14 @@
     <div class="button-area" style="top: 220px; left: 20px; width: 80px; height: 40px;" onclick="changePage('profil')"></div>
     <div class="button-area" style="top: 280px; left: 20px; width: 80px; height: 40px;" onclick="changePage('mesaj')"></div>
     <div class="button-area" style="bottom: 40px; left: 20px; width: 80px; height: 40px;" onclick="changePage('ayarlar')"></div>
-  </div>  <script type="module">
+  </div>
+
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyB7FeGeONvMD0J_7EkKqZhfUFGya6zR5Ig",
+      apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
       authDomain: "brando-giris.firebaseapp.com",
       databaseURL: "https://brando-giris-default-rtdb.firebaseio.com",
       projectId: "brando-giris",
@@ -126,20 +154,51 @@
       } else {
         authContainer.style.display = "block";
         mainContainer.style.display = "none";
+        // Başlangıçta login formu açık olsun
+        showLoginForm();
       }
     });
 
-    document.getElementById("login-form").addEventListener("submit", (e) => {
+    // Form elemanları
+    const loginForm = document.getElementById("login-form");
+    const signupForm = document.getElementById("signup-form");
+    const toggleSignup = document.getElementById("toggle-signup");
+    const toggleLogin = document.getElementById("toggle-login");
+
+    function showLoginForm() {
+      loginForm.style.display = "block";
+      signupForm.style.display = "none";
+    }
+
+    function showSignupForm() {
+      loginForm.style.display = "none";
+      signupForm.style.display = "block";
+    }
+
+    toggleSignup.addEventListener("click", showSignupForm);
+    toggleLogin.addEventListener("click", showLoginForm);
+
+    // Giriş yapma
+    loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
       signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          loader.style.display = "none";
-        })
         .catch((error) => {
           alert("Giriş hatası: " + error.message);
         });
     });
-  </script></body>
+
+    // Kayıt olma
+    signupForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("signup-email").value;
+      const password = document.getElementById("signup-password").value;
+      createUserWithEmailAndPassword(auth, email, password)
+        .catch((error) => {
+          alert("Kayıt hatası: " + error.message);
+        });
+    });
+  </script>
+</body>
 </html>
