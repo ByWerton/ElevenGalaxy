@@ -1,110 +1,145 @@
-<!DOCTYPE html>
-<html lang="tr">
+<!DOCTYPE html><html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ELVG Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brando Giriş</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
-    #girisEkrani, #icerikAlani {
-      width: 100vw;
-      height: 100vh;
-      position: absolute;
-      top: 0; left: 0;
-    }
-    #girisEkrani {
-      background: url('https://drive.google.com/uc?id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat center center / cover;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-    #girisEkrani button {
-      padding: 10px 20px;
-      font-size: 18px;
-      border: none;
-      background: #ffffffcc;
-      cursor: pointer;
-      border-radius: 10px;
-    }
-    #icerikAlani {
-      display: none;
-    }
-    #menu {
-      background: url('https://drive.google.com/uc?id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat -10px -10px;
-      background-size: 300px 100%;
-      width: 90px;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 2;
-    }
-    .menuButon {
-      position: absolute;
-      width: 70px;
-      height: 60px;
-      left: 10px;
-      cursor: pointer;
-    }
-    #durumBtn { top: 100px; }
-    #leaderboardBtn { top: 180px; }
-    #profilBtn { top: 260px; }
-    #mesajBtn { top: 340px; }
-    #ayarlarBtn { top: 540px; }
+    html, body { width: 100%; height: 100%; overflow: hidden; font-family: sans-serif; }
+    body.dark { background-color: #121212; color: #fff; }#loader {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  z-index: 9999;
+}
 
-    #icerik {
-      position: absolute;
-      left: 90px;
-      top: 0;
-      width: calc(100vw - 90px);
-      height: 100vh;
-      background-size: cover;
-      background-position: center;
-      z-index: 1;
-    }
+#auth-container, #main-container {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+#menu {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 120px;
+  height: 100%;
+  background: url('https://drive.google.com/uc?export=view&id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat center center / cover;
+  z-index: 10;
+}
+
+.content {
+  margin-left: 120px;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 0.3s;
+}
+
+.button-area {
+  position: absolute;
+  z-index: 20;
+  cursor: pointer;
+}
+
+#login-form {
+  text-align: center;
+  padding-top: 100px;
+}
+
+#login-form input {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  width: 80%;
+}
+
+#login-form button {
+  padding: 10px 20px;
+}
+
   </style>
 </head>
 <body>
+  <div id="loader">Yükleniyor...</div>  <div id="auth-container">
+    <form id="login-form">
+      <h2>Giriş Yap</h2>
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Şifre" required />
+      <button type="submit">Giriş Yap</button>
+    </form>
+  </div>  <div id="main-container">
+    <div id="menu"></div>
+    <div class="content" id="content"></div>
+    <div class="button-area" style="top: 100px; left: 20px; width: 80px; height: 40px;" onclick="changePage('durum')"></div>
+    <div class="button-area" style="top: 160px; left: 20px; width: 80px; height: 40px;" onclick="changePage('leaderboard')"></div>
+    <div class="button-area" style="top: 220px; left: 20px; width: 80px; height: 40px;" onclick="changePage('profil')"></div>
+    <div class="button-area" style="top: 280px; left: 20px; width: 80px; height: 40px;" onclick="changePage('mesaj')"></div>
+    <div class="button-area" style="bottom: 40px; left: 20px; width: 80px; height: 40px;" onclick="changePage('ayarlar')"></div>
+  </div>  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  <div id="girisEkrani">
-    <button onclick="girisYap()">Giriş Yap</button>
-  </div>
-
-  <div id="icerikAlani">
-    <div id="menu">
-      <div class="menuButon" id="durumBtn" onclick="icerikDegistir('durum')"></div>
-      <div class="menuButon" id="leaderboardBtn" onclick="icerikDegistir('leaderboard')"></div>
-      <div class="menuButon" id="profilBtn" onclick="icerikDegistir('profil')"></div>
-      <div class="menuButon" id="mesajBtn" onclick="icerikDegistir('mesajlar')"></div>
-      <div class="menuButon" id="ayarlarBtn" onclick="icerikDegistir('ayarlar')"></div>
-    </div>
-    <div id="icerik"></div>
-  </div>
-
-  <script>
-    const resimler = {
-      durum: "https://drive.google.com/uc?id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9kC",
-      leaderboard: "https://drive.google.com/uc?id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i",
-      mesajlar: "https://drive.google.com/uc?id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-",
-      ayarlar: "https://drive.google.com/uc?id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK",
-      profil: "https://drive.google.com/uc?id=15mSBMsBaYg3wgPBEnVVJV0jLOuMlSll8",
+    const firebaseConfig = {
+      apiKey: "AIzaSyClCn7ORqxqGhjBhzEXAMPLEEXAMPLEEXMPLw",
+      authDomain: "brando-giris.firebaseapp.com",
+      databaseURL: "https://brando-giris-default-rtdb.firebaseio.com",
+      projectId: "brando-giris",
+      storageBucket: "brando-giris.appspot.com",
+      messagingSenderId: "",
+      appId: ""
     };
 
-    function girisYap() {
-      document.getElementById("girisEkrani").style.display = "none";
-      document.getElementById("icerikAlani").style.display = "block";
-      icerikDegistir('durum'); // Başlangıçta "durum" sayfası gelsin
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const loader = document.getElementById("loader");
+    const authContainer = document.getElementById("auth-container");
+    const mainContainer = document.getElementById("main-container");
+    const content = document.getElementById("content");
+
+    const pageImages = {
+      durum: "https://drive.google.com/uc?export=view&id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9kC",
+      leaderboard: "https://drive.google.com/uc?export=view&id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i",
+      profil: "https://drive.google.com/uc?export=view&id=15mSBMsBaYg3wgPBEnVVJV0jLOuMlSll8",
+      mesaj: "https://drive.google.com/uc?export=view&id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-",
+      ayarlar: "https://drive.google.com/uc?export=view&id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK"
+    };
+
+    function changePage(page) {
+      content.style.backgroundImage = `url(${pageImages[page]})`;
     }
 
-    function icerikDegistir(sayfa) {
-      document.getElementById("icerik").style.backgroundImage = `url('${resimler[sayfa]}')`;
-    }
-  </script>
+    onAuthStateChanged(auth, (user) => {
+      loader.style.display = "none";
+      if (user) {
+        authContainer.style.display = "none";
+        mainContainer.style.display = "block";
+        changePage("durum");
+      } else {
+        authContainer.style.display = "block";
+        mainContainer.style.display = "none";
+      }
+    });
 
-</body>
+    document.getElementById("login-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          loader.style.display = "none";
+        })
+        .catch((error) => {
+          alert("Giriş hatası: " + error.message);
+        });
+    });
+  </script></body>
 </html>
