@@ -5,151 +5,106 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ELVG Site</title>
   <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      overflow: hidden;
     }
-    body, html {
-      height: 100%;
-      font-family: sans-serif;
-      background-color: #111;
-      color: white;
-    }
-
-    .loader {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .loader div {
-      width: 40px;
-      height: 40px;
-      border: 5px solid #fff;
-      border-top: 5px solid transparent;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% {transform: rotate(0);}
-      100% {transform: rotate(360deg);}
-    }
-
-    #app {
-      display: flex;
-      height: 100%;
-    }
-
-    .menu {
-      width: 80px;
-      background-color: #222;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 1rem;
-      position: fixed;
-      height: 100%;
-      z-index: 10;
-    }
-
-    .menu button {
-      background: none;
-      border: none;
-      margin: 10px 0;
-      cursor: pointer;
-      width: 60px;
-      height: 60px;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .content {
-      margin-left: 80px;
-      width: calc(100% - 80px);
-      height: 100%;
-      position: relative;
-    }
-
-    .screen {
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
+    #girisEkrani, #icerikAlani {
+      width: 100vw;
+      height: 100vh;
       position: absolute;
       top: 0; left: 0;
+    }
+    #girisEkrani {
+      background: url('https://drive.google.com/uc?id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat center center / cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    #girisEkrani button {
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      background: #ffffffcc;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+    #icerikAlani {
       display: none;
     }
-
-    .screen.active {
-      display: block;
-    }
-
-    #usernameDisplay {
+    #menu {
+      background: url('https://drive.google.com/uc?id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat -10px -10px;
+      background-size: 300px 100%;
+      width: 90px;
+      height: 100%;
       position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 1.5rem;
-      color: white;
-      background: rgba(0,0,0,0.5);
-      padding: 4px 12px;
-      border-radius: 10px;
+      top: 0;
+      left: 0;
+      z-index: 2;
+    }
+    .menuButon {
+      position: absolute;
+      width: 70px;
+      height: 60px;
+      left: 10px;
+      cursor: pointer;
+    }
+    #durumBtn { top: 100px; }
+    #leaderboardBtn { top: 180px; }
+    #profilBtn { top: 260px; }
+    #mesajBtn { top: 340px; }
+    #ayarlarBtn { top: 540px; }
+
+    #icerik {
+      position: absolute;
+      left: 90px;
+      top: 0;
+      width: calc(100vw - 90px);
+      height: 100vh;
+      background-size: cover;
+      background-position: center;
+      z-index: 1;
     }
   </style>
 </head>
 <body>
-  <div class="loader"><div></div></div>
 
-  <div id="app" style="display:none;">
-    <div class="menu">
-      <button style="background-image:url('https://drive.google.com/thumbnail?id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9kC')" onclick="switchScreen('durum')"></button>
-      <button style="background-image:url('https://drive.google.com/thumbnail?id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i')" onclick="switchScreen('leaderboard')"></button>
-      <button style="background-image:url('https://drive.google.com/thumbnail?id=15mSBMsBaYg3wgPBEnVVJV0jLOuMlSll8')" onclick="switchScreen('profil')"></button>
-      <button style="background-image:url('https://drive.google.com/thumbnail?id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-')" onclick="switchScreen('mesaj')"></button>
-      <button style="background-image:url('https://drive.google.com/thumbnail?id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK')" onclick="if(isLoggedIn){switchScreen('ayar')}else{alert('Önce giriş yapmalısınız.')}"></button>
-    </div>
+  <div id="girisEkrani">
+    <button onclick="girisYap()">Giriş Yap</button>
+  </div>
 
-    <div class="content">
-      <div id="durum" class="screen active" style="background-image:url('https://drive.google.com/thumbnail?id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9kC')"></div>
-      <div id="leaderboard" class="screen" style="background-image:url('https://drive.google.com/thumbnail?id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i')"></div>
-      <div id="profil" class="screen" style="background-image:url('https://drive.google.com/thumbnail?id=15mSBMsBaYg3wgPBEnVVJV0jLOuMlSll8')">
-        <div id="usernameDisplay">Kullanıcı Adı</div>
-      </div>
-      <div id="mesaj" class="screen" style="background-image:url('https://drive.google.com/thumbnail?id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-')"></div>
-      <div id="ayar" class="screen" style="background-image:url('https://drive.google.com/thumbnail?id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK')"></div>
+  <div id="icerikAlani">
+    <div id="menu">
+      <div class="menuButon" id="durumBtn" onclick="icerikDegistir('durum')"></div>
+      <div class="menuButon" id="leaderboardBtn" onclick="icerikDegistir('leaderboard')"></div>
+      <div class="menuButon" id="profilBtn" onclick="icerikDegistir('profil')"></div>
+      <div class="menuButon" id="mesajBtn" onclick="icerikDegistir('mesajlar')"></div>
+      <div class="menuButon" id="ayarlarBtn" onclick="icerikDegistir('ayarlar')"></div>
     </div>
+    <div id="icerik"></div>
   </div>
 
   <script>
-    const screens = document.querySelectorAll(".screen");
-    let isLoggedIn = false;
-
-    function switchScreen(id) {
-      screens.forEach(s => s.classList.remove("active"));
-      document.getElementById(id).classList.add("active");
-    }
-
-    function setUsername(name) {
-      const el = document.getElementById("usernameDisplay");
-      if (el) el.textContent = name;
-    }
-
-    // Simüle edilmiş giriş (istersen Firebase ile bağlayabiliriz)
-    window.onload = function () {
-      setTimeout(() => {
-        document.querySelector(".loader").style.display = "none";
-        document.getElementById("app").style.display = "flex";
-
-        // Giriş simülasyonu
-        isLoggedIn = true;
-        setUsername("elvg_user123");
-
-      }, 1000);
+    const resimler = {
+      durum: "https://drive.google.com/uc?id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9kC",
+      leaderboard: "https://drive.google.com/uc?id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i",
+      mesajlar: "https://drive.google.com/uc?id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-",
+      ayarlar: "https://drive.google.com/uc?id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK",
+      profil: "https://drive.google.com/uc?id=15mSBMsBaYg3wgPBEnVVJV0jLOuMlSll8",
     };
+
+    function girisYap() {
+      document.getElementById("girisEkrani").style.display = "none";
+      document.getElementById("icerikAlani").style.display = "block";
+      icerikDegistir('durum'); // Başlangıçta "durum" sayfası gelsin
+    }
+
+    function icerikDegistir(sayfa) {
+      document.getElementById("icerik").style.backgroundImage = `url('${resimler[sayfa]}')`;
+    }
   </script>
+
 </body>
 </html>
