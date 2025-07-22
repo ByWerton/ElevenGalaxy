@@ -1,11 +1,11 @@
-<!DOCTYPE html><html lang="tr">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mesajlaşma Sistemi</title>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
+  <meta charset="UTF-8" />
+  <title>Mesajlaşma</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -46,14 +46,30 @@
     .msg strong {
       color: #0af;
     }
+    #logoutBtn {
+      background: #e53935;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      align-self: flex-end;
+    }
+    #logoutBtn:hover {
+      background: #d32f2f;
+    }
   </style>
 </head>
 <body>
+  <button id="logoutBtn">Çıkış Yap</button>
   <div id="chat"></div>
   <form id="messageForm">
     <input type="text" id="messageInput" placeholder="Mesaj yaz..." required />
     <button id="sendBtn" type="submit">Gönder</button>
-  </form>  <script>
+  </form>
+
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
       authDomain: "elevengalaxy-4ab1f.firebaseapp.com",
@@ -75,7 +91,7 @@
         currentUser = user;
         listenForMessages();
       } else {
-        alert("Lütfen giriş yapın!");
+        alert("Lütfen giriş yapınız!");
         window.location.href = "index.html";
       }
     });
@@ -83,6 +99,7 @@
     const chat = document.getElementById("chat");
     const messageForm = document.getElementById("messageForm");
     const messageInput = document.getElementById("messageInput");
+    const logoutBtn = document.getElementById("logoutBtn");
 
     messageForm.addEventListener("submit", e => {
       e.preventDefault();
@@ -109,5 +126,12 @@
         chat.scrollTop = chat.scrollHeight;
       });
     }
-  </script></body>
+
+    logoutBtn.addEventListener("click", () => {
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    });
+  </script>
+</body>
 </html>
