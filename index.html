@@ -1,139 +1,111 @@
 <!DOCTYPE html><html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Giriş Yap</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giriş Yap / Kayıt Ol</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background: #000;
-      color: white;
       font-family: sans-serif;
+      background-color: #121212;
+      color: white;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background-image: url('https://drive.google.com/uc?export=view&id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-');
-      background-size: cover;
-      background-position: center;
     }
-    #loader {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: black;
-      color: white;
-      font-size: 2rem;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    #app {
-      display: none;
-    }
-    #auth {
-      backdrop-filter: blur(10px);
-      padding: 2rem;
-      border-radius: 1rem;
-      background: rgba(0,0,0,0.5);
+    .container {
+      background-color: #1e1e1e;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      width: 300px;
     }
     input {
-      display: block;
-      margin-bottom: 1rem;
-      padding: 0.5rem;
       width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+      background-color: #333;
+      color: white;
     }
     button {
-      padding: 0.5rem 1rem;
-      margin-top: 1rem;
-      background: #00f;
-      color: white;
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background-color: #4caf50;
       border: none;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
       cursor: pointer;
     }
+    #message {
+      margin-top: 10px;
+      color: red;
+      text-align: center;
+    }
   </style>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 </head>
 <body>
-  <div id="loader">Yükleniyor...</div>
-  <div id="auth">
-    <h2>Giriş Yap</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Şifre" />
-    <button onclick="login()">Giriş Yap</button>
-    <button onclick="register()">Kayıt Ol</button>
-    <p id="error" style="color: red;"></p>
-  </div>
-  <div id="app">
-    <h1>Hoş geldin!</h1>
-    <!-- Ana içerik buraya gelecek -->
-  </div>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>  <script>
+  <div class="container">
+    <h2>Giriş Yap / Kayıt Ol</h2>
+    <input type="email" id="email" placeholder="E-posta">
+    <input type="password" id="password" placeholder="Şifre">
+    <button onclick="girisYap()">Giriş Yap</button>
+    <button onclick="kayitOl()">Kayıt Ol</button>
+    <div id="message"></div>
+  </div>  <script>
+    // Firebase yapılandırması
     const firebaseConfig = {
       apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
-      authDomain: "your-project.firebaseapp.com",
-      projectId: "your-project",
-      storageBucket: "your-project.appspot.com",
-      messagingSenderId: "your-id",
-      appId: "your-app-id"
+      authDomain: "senin-proje-id.firebaseapp.com",
+      projectId: "senin-proje-id",
+      storageBucket: "senin-proje-id.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1:1234567890:web:abc123xyz456"
     };
+    firebase.initializeApp(firebaseConfig);
 
-    const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    const loader = document.getElementById("loader");
-    const appDiv = document.getElementById("app");
-    const authDiv = document.getElementById("auth");
-    const errorText = document.getElementById("error");
-
-    function showLoader() {
-      loader.style.display = "flex";
-    }
-    function hideLoader() {
-      loader.style.display = "none";
-    }
-
-    function login() {
-      showLoader();
+    function girisYap() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
+
       auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          errorText.textContent = "";
+        .then(user => {
+          document.getElementById("message").style.color = 'lightgreen';
+          document.getElementById("message").innerText = "Giriş başarılı!";
+          setTimeout(() => {
+            window.location.href = "site.html"; // ana sayfa dosyasına yönlendirme
+          }, 1000);
         })
-        .catch(err => {
-          errorText.textContent = err.message;
-          hideLoader();
+        .catch(error => {
+          document.getElementById("message").innerText = error.message;
         });
     }
 
-    function register() {
-      showLoader();
+    function kayitOl() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
+
       auth.createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          errorText.textContent = "Kayıt başarılı, giriş yapabilirsiniz.";
-          hideLoader();
+        .then(user => {
+          document.getElementById("message").style.color = 'lightgreen';
+          document.getElementById("message").innerText = "Kayıt başarılı! Giriş yapılıyor...";
+          setTimeout(() => {
+            window.location.href = "site.html"; // kayıt sonrası yönlendirme
+          }, 1000);
         })
-        .catch(err => {
-          errorText.textContent = err.message;
-          hideLoader();
+        .catch(error => {
+          document.getElementById("message").innerText = error.message;
         });
     }
-
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        authDiv.style.display = "none";
-        appDiv.style.display = "block";
-        hideLoader();
-      } else {
-        authDiv.style.display = "block";
-        appDiv.style.display = "none";
-        hideLoader();
-      }
-    });
   </script></body>
 </html>
