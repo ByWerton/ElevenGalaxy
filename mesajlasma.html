@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mesajlaşma Sistemi</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    #chat {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      border-bottom: 1px solid #333;
+    }
+    #messageForm {
+      display: flex;
+      padding: 10px;
+      background: #222;
+    }
+    #messageInput {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #sendBtn {
+      padding: 10px;
+      background: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .msg {
+      margin-bottom: 10px;
+    }
+    .msg strong {
+      color: #0af;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat"></div>
+  <form id="messageForm">
+    <input type="text" id="messageInput" placeholder="Mesaj yaz..." required />
+    <button id="sendBtn" type="submit">Gönder</button>
+  </form>  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
+      authDomain: "elevengalaxy-4ab1f.firebaseapp.com",
+      databaseURL: "https://elevengalaxy-4ab1f-default-rtdb.firebaseio.com/",
+      projectId: "elevengalaxy-4ab1f",
+      storageBucket: "elevengalaxy-4ab1f.appspot.com",
+      messagingSenderId: "147280645202",
+      appId: "1:147280645202:web:6b4f37c899f62a64dc14d0"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    let currentUser = null;
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        currentUser = user;
+        listenForMessages();
+      } else {
+        alert("Lütfen giriş yapın!");
+        window.location.href = "index.html";
+      }
+    });
+
+    const chat = document.getElementById("chat");
+    const messageForm = document.getElementById("messageForm");
+    const messageInput = document.getElementById("messageInput");
+
+    messageForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const text = messageInput.value.trim();
+      if (text && currentUser) {
+        const msgRef = db.ref("messages").push();
+        msgRef.set({
+          uid: currentUser.uid,
+          name: currentUser.email,
+          text: text,
+          timestamp: Date.now()
+        });
+        messageInput.value = "";
+      }
+    });
+
+    function listenForMessages() {
+      db.ref("messages").on("child_added", snapshot => {
+        const msg = snapshot.val();
+        const div = document.createElement("div");
+        div.classList.add("msg");
+        div.innerHTML = `<strong>${msg.name}:</strong> ${msg.text}`;
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
+      });
+    }
+  </script></body>
+</html>
