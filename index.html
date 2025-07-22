@@ -72,11 +72,12 @@
       width: 100%;
     }
 
-    #toggle-signup {
+    #toggle-signup, #toggle-login {
       margin-top: 15px;
       cursor: pointer;
       color: #0066cc;
       text-decoration: underline;
+      user-select: none;
     }
   </style>
 </head>
@@ -97,13 +98,14 @@
       <input type="email" id="signup-email" placeholder="Email" required />
       <input type="password" id="signup-password" placeholder="Şifre" required />
       <button type="submit">Kayıt Ol</button>
-      <div id="toggle-login" style="margin-top: 15px; cursor: pointer; color: #0066cc; text-decoration: underline;">Giriş Yap</div>
+      <div id="toggle-login">Giriş Yap</div>
     </form>
   </div>
 
   <div id="main-container">
     <div id="menu"></div>
     <div class="content" id="content"></div>
+
     <div class="button-area" style="top: 100px; left: 20px; width: 80px; height: 40px;" onclick="changePage('durum')"></div>
     <div class="button-area" style="top: 160px; left: 20px; width: 80px; height: 40px;" onclick="changePage('leaderboard')"></div>
     <div class="button-area" style="top: 220px; left: 20px; width: 80px; height: 40px;" onclick="changePage('profil')"></div>
@@ -154,7 +156,6 @@
       } else {
         authContainer.style.display = "block";
         mainContainer.style.display = "none";
-        // Başlangıçta login formu açık olsun
         showLoginForm();
       }
     });
