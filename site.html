@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hoş Geldin</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #121212, #1e1e1e);
+      color: #ffffff;
+      font-family: "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5em;
+    }
+    p {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+    .btn {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: #00c853;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .btn:hover {
+      background: #00b74a;
+    }
+  </style>
+</head>
+<body>
+  <h1>Giriş Başarılı! 👋</h1>
+  <p>Hoş geldin, artık içeridesin!</p>
+  <button class="btn" onclick="logout()">Çıkış Yap</button>
+
+  <script>
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
