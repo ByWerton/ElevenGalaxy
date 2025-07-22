@@ -2,18 +2,15 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <title>Hoş Geldin</title>
+  <title>Ana Sayfa</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       background: linear-gradient(to right, #121212, #1e1e1e);
-      color: #ffffff;
-      font-family: "Segoe UI", sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
       height: 100vh;
     }
     h1 {
@@ -30,7 +27,7 @@
       background: #00c853;
       border: none;
       border-radius: 8px;
-      color: #fff;
+      color: white;
       cursor: pointer;
       font-size: 1rem;
     }
@@ -40,14 +37,35 @@
   </style>
 </head>
 <body>
-  <h1>Giriş Başarılı! 👋</h1>
-  <p>Hoş geldin, artık içeridesin!</p>
+  <h1>Ana Sayfa</h1>
+  <p>Buraya profil, ayarlar gibi sayfalar ekleyebilirsin.</p>
   <button class="btn" onclick="logout()">Çıkış Yap</button>
 
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
+      authDomain: "elevengalaxy-4ab1f.firebaseapp.com",
+      projectId: "elevengalaxy-4ab1f",
+      storageBucket: "elevengalaxy-4ab1f.appspot.com",
+      messagingSenderId: "147280645202",
+      appId: "1:147280645202:web:6b4f37c899f62a64dc14d0"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = "index.html";
+      }
+    });
+
     function logout() {
-      localStorage.clear();
-      window.location.href = "index.html";
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      });
     }
   </script>
 </body>
