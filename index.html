@@ -1,77 +1,54 @@
-<!DOCTYPE html><html lang="tr">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
   <title>Giriş Yap / Kayıt Ol</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      font-family: sans-serif;
-      background-color: #121212;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      margin: 0; padding: 0; font-family: sans-serif;
+      background-color: #121212; color: white;
+      display: flex; justify-content: center; align-items: center; height: 100vh;
     }
     .container {
-      background-color: #1e1e1e;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      width: 300px;
+      background-color: #1e1e1e; padding: 30px; border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5); width: 300px;
     }
     input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 6px;
-      background-color: #333;
-      color: white;
+      width: 100%; padding: 10px; margin: 10px 0;
+      border: none; border-radius: 6px; background-color: #333; color: white;
     }
     button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      background-color: #4caf50;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
+      width: 100%; padding: 10px; margin-top: 10px;
+      background-color: #4caf50; border: none; border-radius: 6px;
+      color: white; font-weight: bold; cursor: pointer;
     }
     #message {
-      margin-top: 10px;
-      color: red;
-      text-align: center;
+      margin-top: 10px; color: red; text-align: center;
     }
   </style>
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 </head>
 <body>
   <div class="container">
     <h2>Giriş Yap / Kayıt Ol</h2>
-    <input type="email" id="email" placeholder="E-posta">
-    <input type="password" id="password" placeholder="Şifre">
+    <input type="email" id="email" placeholder="E-posta" />
+    <input type="password" id="password" placeholder="Şifre" />
     <button onclick="girisYap()">Giriş Yap</button>
     <button onclick="kayitOl()">Kayıt Ol</button>
     <div id="message"></div>
-  </div>  <script>
-    // Firebase yapılandırması
+  </div>
+
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
-      authDomain: "senin-proje-id.firebaseapp.com",
-      projectId: "senin-proje-id",
-      storageBucket: "senin-proje-id.appspot.com",
-      messagingSenderId: "1234567890",
-      appId: "1:1234567890:web:abc123xyz456"
+      authDomain: "elevengalaxy-4ab1f.firebaseapp.com",
+      projectId: "elevengalaxy-4ab1f",
+      storageBucket: "elevengalaxy-4ab1f.appspot.com",
+      messagingSenderId: "147280645202",
+      appId: "1:147280645202:web:6b4f37c899f62a64dc14d0"
     };
     firebase.initializeApp(firebaseConfig);
-
     const auth = firebase.auth();
 
     function girisYap() {
@@ -79,14 +56,15 @@
       const password = document.getElementById("password").value;
 
       auth.signInWithEmailAndPassword(email, password)
-        .then(user => {
-          document.getElementById("message").style.color = 'lightgreen';
-          document.getElementById("message").innerText = "Giriş başarılı!";
+        .then(() => {
+          document.getElementById("message").style.color = "lightgreen";
+          document.getElementById("message").innerText = "Giriş başarılı! Yönlendiriliyorsunuz...";
           setTimeout(() => {
-            window.location.href = "site.html"; // ana sayfa dosyasına yönlendirme
+            window.location.href = "mesajlasma.html";
           }, 1000);
         })
         .catch(error => {
+          document.getElementById("message").style.color = "red";
           document.getElementById("message").innerText = error.message;
         });
     }
@@ -96,16 +74,18 @@
       const password = document.getElementById("password").value;
 
       auth.createUserWithEmailAndPassword(email, password)
-        .then(user => {
-          document.getElementById("message").style.color = 'lightgreen';
-          document.getElementById("message").innerText = "Kayıt başarılı! Giriş yapılıyor...";
+        .then(() => {
+          document.getElementById("message").style.color = "lightgreen";
+          document.getElementById("message").innerText = "Kayıt başarılı! Yönlendiriliyorsunuz...";
           setTimeout(() => {
-            window.location.href = "site.html"; // kayıt sonrası yönlendirme
+            window.location.href = "mesajlasma.html";
           }, 1000);
         })
         .catch(error => {
+          document.getElementById("message").style.color = "red";
           document.getElementById("message").innerText = error.message;
         });
     }
-  </script></body>
+  </script>
+</body>
 </html>
