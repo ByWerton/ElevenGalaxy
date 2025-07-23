@@ -1,41 +1,98 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>Ana Sayfa</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    body {
-      display: flex;
-      background-color: #000;
-    }
-
-    #menu {
-      width: 260px;
-      min-width: 260px;
-      height: 100vh;
-      background: url('https://drive.google.com/uc?export=view&id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9c') no-repeat;
-      background-size: cover;
-      background-position: center;
-    }
-
-    #content {
-      flex: 1;
-      height: 100vh;
-      background: url('https://drive.google.com/uc?export=view&id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat center center;
-      background-size: cover;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ana Sayfa - ElevenGalaxy</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: Arial, sans-serif;
+  }
+  body {
+    display: flex;
+    background: #000;
+  }
+  #menu {
+    width: 90px;
+    height: 100vh;
+    background: url('https://drive.google.com/uc?export=view&id=1FzwO5e7XxsWM5qcV7g6QhLWTXDmyo7nk') no-repeat center center;
+    background-size: cover;
+    position: fixed;
+    left: 0; top: 0;
+  }
+  #content {
+    margin-left: 90px;
+    flex: 1;
+    height: 100vh;
+    background: url('https://drive.google.com/uc?export=view&id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .menu-button {
+    position: absolute;
+    left: 10px;
+    width: 70px;
+    height: 40px;
+    cursor: pointer;
+  }
+  #btnDurum       { top: 80px; }
+  #btnLeaderboard { top: 140px; }
+  #btnProfil      { top: 200px; }
+  #btnMesaj       { top: 260px; }
+  #btnAyarlar     { bottom: 30px; }
+  .menu-button:hover {
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 5px;
+  }
+</style>
 </head>
 <body>
-  <div id="menu"></div>
-  <div id="content"></div>
+
+<div id="menu">
+  <div class="menu-button" id="btnDurum" title="Durum" onclick="gotoPage('durum.html')"></div>
+  <div class="menu-button" id="btnLeaderboard" title="Leaderboard" onclick="gotoPage('leaderboard.html')"></div>
+  <div class="menu-button" id="btnProfil" title="Profil" onclick="gotoPage('profil.html')"></div>
+  <div class="menu-button" id="btnMesaj" title="Mesajlar" onclick="gotoPage('mesajlar.html')"></div>
+  <div class="menu-button" id="btnAyarlar" title="Ayarlar" onclick="gotoPage('ayarlar.html')"></div>
+</div>
+
+<div id="content">
+  <h1>Hoşgeldiniz, <span id="userEmail">...</span></h1>
+  <p>Ana sayfa içeriği burada olacak.</p>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
+    authDomain: "elevengalaxy-4ab1f.firebaseapp.com",
+    databaseURL: "https://elevengalaxy-4ab1f-default-rtdb.firebaseio.com",
+    projectId: "elevengalaxy-4ab1f",
+    storageBucket: "elevengalaxy-4ab1f.appspot.com",
+    messagingSenderId: "441555249711",
+    appId: "1:441555249711:web:409b2320283d5fe46134da",
+    measurementId: "G-2MEFN03TH0"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, user => {
+    if (!user) {
+      window.location.href = "index.html";
+    } else {
+      document.getElementById("userEmail").textContent = user.email;
+    }
+  });
+
+  function gotoPage(page) {
+    window.location.href = page;
+  }
+</script>
+
 </body>
 </html>
