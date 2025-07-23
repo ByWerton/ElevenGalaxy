@@ -3,59 +3,67 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ana Sayfa | ElevenGalaxy</title>
+  <title>Giriş Yap / Kayıt Ol</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body, html {
-      width: 100%;
-      height: 100%;
-      font-family: sans-serif;
-      background: url('https://drive.google.com/uc?export=view&id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat center center fixed;
-      background-size: cover;
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
       color: white;
-      overflow: hidden;
-    }
-    .menu {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       height: 100vh;
-      background: url('https://drive.google.com/uc?export=view&id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat;
-      background-size: cover;
     }
-    .content {
-      margin-left: 90px;
+    .container {
+      background: #222;
       padding: 20px;
-      height: 100vh;
-      overflow-y: auto;
-      backdrop-filter: blur(5px);
+      border-radius: 10px;
+      box-shadow: 0 0 15px #000;
+      max-width: 400px;
+      width: 100%;
     }
-    .welcome {
-      font-size: 28px;
-      margin-top: 20px;
+    input {
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      padding: 10px;
+      width: 100%;
+      margin-top: 10px;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-
-  <div class="menu">
-    <!-- Sol sabit menü (sadece arka plan olarak) -->
+  <div class="container">
+    <h2>Giriş Yap / Kayıt Ol</h2>
+    <input type="email" id="email" placeholder="E-posta" />
+    <input type="password" id="password" placeholder="Şifre" />
+    <button onclick="login()">Giriş Yap</button>
+    <button onclick="signup()">Kayıt Ol</button>
+    <div id="error" class="error"></div>
   </div>
 
-  <div class="content">
-    <div class="welcome" id="welcomeText">Hoş geldin...</div>
-  </div>
-
-  <!-- Firebase -->
+  <!-- Firebase SDK -->
   <script type="module">
+    // Firebase SDK yükle
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+    // Firebase yapılandırması (senin verdiğin config)
     const firebaseConfig = {
       apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
       authDomain: "elevengalaxy-4ab1f.firebaseapp.com",
@@ -67,18 +75,39 @@
       measurementId: "G-2MEFN03TH0"
     };
 
+    // Firebase başlat
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const email = user.email;
-        document.getElementById("welcomeText").textContent = `Hoş geldin, ${email}!`;
-      } else {
-        window.location.href = "index.html";
-      }
-    });
-  </script>
+    // Giriş Yap
+    window.login = function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorDiv = document.getElementById("error");
 
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          window.location.href = "anasayfa.html";
+        })
+        .catch((error) => {
+          errorDiv.innerText = "Giriş başarısız: " + error.message;
+        });
+    };
+
+    // Kayıt Ol
+    window.signup = function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorDiv = document.getElementById("error");
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          window.location.href = "anasayfa.html";
+        })
+        .catch((error) => {
+          errorDiv.innerText = "Kayıt başarısız: " + error.message;
+        });
+    };
+  </script>
 </body>
 </html>
