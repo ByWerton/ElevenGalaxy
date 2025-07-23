@@ -1,113 +1,96 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Giriş Yap / Kayıt Ol</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-    .container {
-      background: #222;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px #000;
-      max-width: 400px;
-      width: 100%;
-    }
-    input {
-      width: 100%;
-      margin: 8px 0;
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-    }
-    button {
-      padding: 10px;
-      width: 100%;
-      margin-top: 10px;
-      background-color: #4CAF50;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .error {
-      color: red;
-      margin-top: 10px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Giriş Yap / Kayıt Ol</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+  #container { background: #222; padding: 20px; border-radius: 8px; width: 320px; }
+  input, button { width: 100%; margin: 10px 0; padding: 10px; border-radius: 5px; border: none; }
+  button { background: #4CAF50; color: white; font-weight: bold; cursor: pointer; }
+  button:hover { background: #45a049; }
+  #message { color: #f88; margin-top: 10px; }
+</style>
 </head>
 <body>
-  <div class="container">
+  <div id="container">
     <h2>Giriş Yap / Kayıt Ol</h2>
     <input type="email" id="email" placeholder="E-posta" />
     <input type="password" id="password" placeholder="Şifre" />
-    <button onclick="login()">Giriş Yap</button>
-    <button onclick="signup()">Kayıt Ol</button>
-    <div id="error" class="error"></div>
+    <button id="btnLogin">Giriş Yap</button>
+    <button id="btnRegister">Kayıt Ol</button>
+    <div id="message"></div>
   </div>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    // Firebase SDK yükle
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    // Firebase yapılandırması (senin verdiğin config)
-    const firebaseConfig = {
-      apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
-      authDomain: "elevengalaxy-4ab1f.firebaseapp.com",
-      databaseURL: "https://elevengalaxy-4ab1f-default-rtdb.firebaseio.com",
-      projectId: "elevengalaxy-4ab1f",
-      storageBucket: "elevengalaxy-4ab1f.appspot.com",
-      messagingSenderId: "441555249711",
-      appId: "1:441555249711:web:409b2320283d5fe46134da",
-      measurementId: "G-2MEFN03TH0"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
+    authDomain: "elevengalaxy-4ab1f.firebaseapp.com",
+    databaseURL: "https://elevengalaxy-4ab1f-default-rtdb.firebaseio.com",
+    projectId: "elevengalaxy-4ab1f",
+    storageBucket: "elevengalaxy-4ab1f.appspot.com",
+    messagingSenderId: "441555249711",
+    appId: "1:441555249711:web:409b2320283d5fe46134da",
+    measurementId: "G-2MEFN03TH0"
+  };
 
-    // Firebase başlat
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-    // Giriş Yap
-    window.login = function () {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const errorDiv = document.getElementById("error");
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const btnLogin = document.getElementById('btnLogin');
+  const btnRegister = document.getElementById('btnRegister');
+  const messageDiv = document.getElementById('message');
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          window.location.href = "anasayfa.html";
-        })
-        .catch((error) => {
-          errorDiv.innerText = "Giriş başarısız: " + error.message;
-        });
-    };
+  btnLogin.addEventListener('click', () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    if (!email || !password) {
+      messageDiv.textContent = 'Lütfen e-posta ve şifre girin.';
+      return;
+    }
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        messageDiv.style.color = '#4CAF50';
+        messageDiv.textContent = 'Giriş başarılı, yönlendiriliyorsunuz...';
+        setTimeout(() => window.location.href = 'anasayfa.html', 1000);
+      })
+      .catch(err => {
+        messageDiv.style.color = '#f88';
+        messageDiv.textContent = 'Giriş hatası: ' + err.message;
+      });
+  });
 
-    // Kayıt Ol
-    window.signup = function () {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const errorDiv = document.getElementById("error");
+  btnRegister.addEventListener('click', () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    if (!email || !password) {
+      messageDiv.textContent = 'Lütfen e-posta ve şifre girin.';
+      return;
+    }
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        messageDiv.style.color = '#4CAF50';
+        messageDiv.textContent = 'Kayıt başarılı, giriş yapılıyor...';
+        setTimeout(() => window.location.href = 'anasayfa.html', 1000);
+      })
+      .catch(err => {
+        messageDiv.style.color = '#f88';
+        messageDiv.textContent = 'Kayıt hatası: ' + err.message;
+      });
+  });
 
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          window.location.href = "anasayfa.html";
-        })
-        .catch((error) => {
-          errorDiv.innerText = "Kayıt başarısız: " + error.message;
-        });
-    };
-  </script>
+  // Eğer kullanıcı zaten giriş yapmışsa direkt anasayfaya at
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      window.location.href = 'anasayfa.html';
+    }
+  });
+</script>
 </body>
 </html>
