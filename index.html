@@ -2,92 +2,68 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Giriş / Kayıt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Giriş Yap / Kayıt Ol</title>
   <style>
     body {
-      margin: 0; padding: 0;
       font-family: Arial, sans-serif;
-      background: #121212;
-      color: #eee;
+      background: #111;
+      color: white;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       height: 100vh;
-      overflow: hidden;
     }
     .container {
       background: #222;
-      padding: 30px 40px;
-      border-radius: 12px;
+      padding: 20px;
+      border-radius: 10px;
       box-shadow: 0 0 15px #000;
-      width: 320px;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #f0f0f0;
-    }
-    input[type=email], input[type=password] {
+      max-width: 400px;
       width: 100%;
-      padding: 10px 12px;
-      margin: 8px 0 16px;
+    }
+    input {
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 5px;
       border: none;
-      border-radius: 6px;
-      background: #333;
-      color: #eee;
-      font-size: 14px;
     }
     button {
+      padding: 10px;
       width: 100%;
-      padding: 12px;
-      background: #2e8bff;
+      margin-top: 10px;
+      background-color: #4CAF50;
       border: none;
-      border-radius: 6px;
+      border-radius: 5px;
       color: white;
       font-weight: bold;
-      font-size: 16px;
       cursor: pointer;
-      transition: background 0.3s ease;
-      margin-top: 8px;
-    }
-    button:hover {
-      background: #1f6fdd;
-    }
-    .toggle {
-      margin-top: 20px;
-      text-align: center;
-      font-size: 14px;
-      cursor: pointer;
-      color: #bbb;
-    }
-    .toggle:hover {
-      color: #eee;
     }
     .error {
-      color: #ff6b6b;
-      margin-bottom: 12px;
-      text-align: center;
-      font-size: 14px;
+      color: red;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-
-  <div class="container" id="auth-container">
-    <h2 id="form-title">Giriş Yap</h2>
-    <div class="error" id="error-msg"></div>
-    <input type="email" id="email" placeholder="E-posta" required />
-    <input type="password" id="password" placeholder="Şifre" required />
-    <button id="action-btn">Giriş Yap</button>
-    <div class="toggle" id="toggle-link">Hesabınız yok mu? Kayıt olun</div>
+  <div class="container">
+    <h2>Giriş Yap / Kayıt Ol</h2>
+    <input type="email" id="email" placeholder="E-posta" />
+    <input type="password" id="password" placeholder="Şifre" />
+    <button onclick="login()">Giriş Yap</button>
+    <button onclick="signup()">Kayıt Ol</button>
+    <div id="error" class="error"></div>
   </div>
 
   <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script type="module">
+    // Firebase SDK yükle
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  <script>
+    // Firebase yapılandırması (senin verdiğin config)
     const firebaseConfig = {
       apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
       authDomain: "elevengalaxy-4ab1f.firebaseapp.com",
@@ -99,66 +75,39 @@
       measurementId: "G-2MEFN03TH0"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    // Firebase başlat
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    const formTitle = document.getElementById('form-title');
-    const actionBtn = document.getElementById('action-btn');
-    const toggleLink = document.getElementById('toggle-link');
-    const errorMsg = document.getElementById('error-msg');
+    // Giriş Yap
+    window.login = function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorDiv = document.getElementById("error");
 
-    let isLogin = true;
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          window.location.href = "anasayfa.html";
+        })
+        .catch((error) => {
+          errorDiv.innerText = "Giriş başarısız: " + error.message;
+        });
+    };
 
-    toggleLink.addEventListener('click', () => {
-      isLogin = !isLogin;
-      if(isLogin) {
-        formTitle.textContent = 'Giriş Yap';
-        actionBtn.textContent = 'Giriş Yap';
-        toggleLink.textContent = 'Hesabınız yok mu? Kayıt olun';
-      } else {
-        formTitle.textContent = 'Kayıt Ol';
-        actionBtn.textContent = 'Kayıt Ol';
-        toggleLink.textContent = 'Zaten hesabınız var mı? Giriş yapın';
-      }
-      errorMsg.textContent = '';
-    });
+    // Kayıt Ol
+    window.signup = function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorDiv = document.getElementById("error");
 
-    actionBtn.addEventListener('click', () => {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-      errorMsg.textContent = '';
-
-      if (!email || !password) {
-        errorMsg.textContent = 'Lütfen e-posta ve şifre giriniz.';
-        return;
-      }
-
-      if (isLogin) {
-        auth.signInWithEmailAndPassword(email, password)
-          .then(() => {
-            localStorage.setItem('user', email);
-            window.location.href = 'anasayfa.html';
-          })
-          .catch(error => {
-            errorMsg.textContent = error.message;
-          });
-      } else {
-        auth.createUserWithEmailAndPassword(email, password)
-          .then(() => {
-            localStorage.setItem('user', email);
-            window.location.href = 'anasayfa.html';
-          })
-          .catch(error => {
-            errorMsg.textContent = error.message;
-          });
-      }
-    });
-
-    auth.onAuthStateChanged(user => {
-      if(user) {
-        window.location.href = 'anasayfa.html';
-      }
-    });
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          window.location.href = "anasayfa.html";
+        })
+        .catch((error) => {
+          errorDiv.innerText = "Kayıt başarısız: " + error.message;
+        });
+    };
   </script>
 </body>
 </html>
