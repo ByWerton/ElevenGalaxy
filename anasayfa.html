@@ -1,77 +1,78 @@
-<!DOCTYPE html>
-<html lang="tr">
+<!-- Ana Sayfa (anasayfa.html) --><!DOCTYPE html><html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ana Sayfa - ElevenGalaxy</title>
-<style>
-  html, body {
-    margin: 0; padding: 0; height: 100%;
-    font-family: Arial, sans-serif;
-    background: #000;
-    overflow: hidden;
-  }
-  #menu-container {
-    position: fixed;
-    top: 0; left: 0;
-    width: 90px;
-    height: 100vh;
-    z-index: 1000;
-  }
-  #content {
-    margin-left: 90px;
-    height: 100vh;
-    background: url('https://drive.google.com/uc?export=view&id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat center center;
-    background-size: cover;
-    color: white;
-    position: relative;
-    padding: 20px;
-    overflow-y: auto;
-  }
-  #welcomeMsg {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background-color: rgba(0,0,0,0.6);
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 18px;
-    font-weight: bold;
-    max-width: 300px;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ana Sayfa</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      background: url('https://drive.google.com/uc?export=view&id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat center center/cover;
+      font-family: Arial, sans-serif;
+    }
+    #menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 110px;
+      height: 100%;
+      background: url('https://drive.google.com/uc?export=view&id=1FzwO5e7XxsWM5qcV7g6QhLWTXDmyo7nk') no-repeat center center;
+      background-size: cover;
+    }
+    .menu-button {
+      position: absolute;
+      width: 80px;
+      height: 40px;
+      left: 15px;
+      cursor: pointer;
+    }
+    #btn-durum { top: 80px; }
+    #btn-leaderboard { top: 145px; }
+    #btn-profil { top: 215px; }
+    #btn-mesajlar { top: 285px; }
+    #btn-ayarlar { bottom: 25px; }
+  </style>
 </head>
 <body>
-
-<div id="menu-container"></div>
-
-<div id="content">
-  <div id="welcomeMsg">Hoşgeldin, <span id="userEmail">...</span></div>
-</div>
-
-<script type="module">
-  import { auth, onAuthStateChanged } from './firebase-config.js';
-
-  fetch('menu.html')
-    .then(r => r.text())
-    .then(html => {
-      document.getElementById('menu-container').innerHTML = html;
-    })
-    .catch(err => console.error('Menü yüklenemedi:', err));
-
-  function gotoPage(page) {
-    window.location.href = page;
-  }
-  window.gotoPage = gotoPage;
-
-  onAuthStateChanged(auth, user => {
-    if (!user) {
-      window.location.href = "index.html";
-    } else {
-      document.getElementById('userEmail').textContent = user.email || "Kullanıcı";
-    }
-  });
-</script>
-
+  <div id="menu">
+    <a href="durum.html" class="menu-button" id="btn-durum"></a>
+    <a href="leaderboard.html" class="menu-button" id="btn-leaderboard"></a>
+    <a href="profil.html" class="menu-button" id="btn-profil"></a>
+    <a href="mesajlar.html" class="menu-button" id="btn-mesajlar"></a>
+    <a href="ayarlar.html" class="menu-button" id="btn-ayarlar"></a>
+  </div>
+</body>
+</html><!-- Durum Sayfası (durum.html) --><!DOCTYPE html><html lang="tr">
+<head><meta charset="UTF-8"><title>Durum</title></head>
+<body style="margin:0;">
+  <iframe src="anasayfa.html" frameborder="0" style="width:100vw; height:100vh;"></iframe>
+</body>
+</html><!-- Leaderboard Sayfası (leaderboard.html) --><!DOCTYPE html><html lang="tr">
+<head><meta charset="UTF-8"><title>Leaderboard</title></head>
+<body style="margin:0;">
+  <iframe src="anasayfa.html" frameborder="0" style="width:100vw; height:100vh;"></iframe>
+</body>
+</html><!-- Profil Sayfası (profil.html) --><!DOCTYPE html><html lang="tr">
+<head><meta charset="UTF-8"><title>Profil</title></head>
+<body style="margin:0;">
+  <iframe src="anasayfa.html" frameborder="0" style="width:100vw; height:100vh;"></iframe>
+</body>
+</html><!-- Mesajlar Sayfası (mesajlar.html) --><!DOCTYPE html><html lang="tr">
+<head><meta charset="UTF-8"><title>Mesajlar</title></head>
+<body style="margin:0;">
+  <iframe src="anasayfa.html" frameborder="0" style="width:100vw; height:100vh;"></iframe>
+</body>
+</html><!-- Ayarlar Sayfası (ayarlar.html) --><!DOCTYPE html><html lang="tr">
+<head><meta charset="UTF-8"><title>Ayarlar</title></head>
+<body style="margin:0;">
+  <iframe src="anasayfa.html" frameborder="0" style="width:100vw; height:100vh;"></iframe>
 </body>
 </html>
