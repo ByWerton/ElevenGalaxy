@@ -1,63 +1,99 @@
-<!DOCTYPE html><html lang="tr">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ana Sayfa</title>
   <style>
-    * {
+    html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-    html, body {
+      overflow: hidden;
       height: 100%;
-      font-family: sans-serif;
     }
-    body {
-      background-image: url('https://drive.google.com/uc?id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-');
+
+    #menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100%;
+      background: url('https://drive.google.com/uc?export=view&id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK') no-repeat;
       background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      display: flex;
+      z-index: 10;
     }
-    nav {
-      width: 120px;
-      background-color: rgba(0, 0, 0, 0.6);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 20px;
-      gap: 20px;
+
+    #content {
+      margin-left: 220px;
+      height: 100%;
     }
-    nav img {
-      width: 100px;
-      height: auto;
-      cursor: pointer;
-    }
-    .content {
-      flex: 1;
-      position: relative;
-    }
+
     iframe {
       width: 100%;
       height: 100%;
       border: none;
     }
+
+    .btn {
+      position: absolute;
+      left: 30px;
+      width: 160px;
+      height: 40px;
+      cursor: pointer;
+      z-index: 20;
+    }
+
+    #btnDurum     { top: 100px; }
+    #btnLeaderboard { top: 160px; }
+    #btnProfil    { top: 220px; }
+    #btnMesajlar  { top: 280px; }
+    #btnAyarlar   { bottom: 40px; }
+
   </style>
 </head>
 <body>
-  <nav>
-    <img src="https://drive.google.com/uc?id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9cV" onclick="loadPage('durum.html')" title="Durum">
-    <img src="https://drive.google.com/uc?id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i" onclick="loadPage('leaderboard.html')" title="Leaderboard">
-    <img src="https://drive.google.com/uc?id=15mSBMsBaYg3wgPBEnVVJV0jLOuMlSll8" onclick="loadPage('profil.html')" title="Profil">
-    <img src="https://drive.google.com/uc?id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-" onclick="loadPage('mesajlar.html')" title="Mesajlar">
-    <img src="https://drive.google.com/uc?id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK" onclick="loadPage('ayarlar.html')" title="Ayarlar" style="margin-top: auto; margin-bottom: 20px;">
-  </nav>
-  <div class="content">
-    <iframe id="mainFrame" src="durum.html"></iframe>
-  </div>  <script>
-    function loadPage(page) {
-      document.getElementById("mainFrame").src = page;
+  <!-- Menü Görseli -->
+  <div id="menu">
+    <div class="btn" id="btnDurum" onclick="openPage('durum.html')"></div>
+    <div class="btn" id="btnLeaderboard" onclick="openPage('leaderboard.html')"></div>
+    <div class="btn" id="btnProfil" onclick="openPage('profil.html')"></div>
+    <div class="btn" id="btnMesajlar" onclick="openPage('mesajlar.html')"></div>
+    <div class="btn" id="btnAyarlar" onclick="openPage('ayarlar.html')"></div>
+  </div>
+
+  <!-- İçerik -->
+  <div id="content">
+    <iframe id="iframeContent" src="durum.html"></iframe>
+  </div>
+
+  <!-- Firebase ve Auth kontrolü -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
+      authDomain: "elevengalaxy-4ab1f.firebaseapp.com",
+      databaseURL: "https://elevengalaxy-4ab1f-default-rtdb.firebaseio.com",
+      projectId: "elevengalaxy-4ab1f",
+      storageBucket: "elevengalaxy-4ab1f.appspot.com",
+      messagingSenderId: "441555249711",
+      appId: "1:441555249711:web:409b2320283d5fe46134da",
+      measurementId: "G-2MEFN03TH0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "index.html"; // Giriş yapılmadıysa index'e at
+      }
+    });
+
+    function openPage(page) {
+      document.getElementById('iframeContent').src = page;
     }
-  </script></body>
+  </script>
+</body>
 </html>
