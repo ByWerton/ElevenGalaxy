@@ -88,15 +88,15 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
   <script>
-    // Firebase config - senin apiKey'i eklemelisin
     const firebaseConfig = {
-      apiKey: "AIzaSyB7FeGeONvMD0J_7EkKqZhfUFGya6zR5Ig",
+      apiKey: "AIzaSyA-Z5s1yzFguRY03UjJz4l581DhIqWe90Y",
       authDomain: "elevengalaxy-4ab1f.firebaseapp.com",
+      databaseURL: "https://elevengalaxy-4ab1f-default-rtdb.firebaseio.com",
       projectId: "elevengalaxy-4ab1f",
       storageBucket: "elevengalaxy-4ab1f.appspot.com",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID",
-      databaseURL: "https://elevengalaxy-4ab1f-default-rtdb.firebaseio.com/"
+      messagingSenderId: "441555249711",
+      appId: "1:441555249711:web:409b2320283d5fe46134da",
+      measurementId: "G-2MEFN03TH0"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -154,7 +154,6 @@
       }
     });
 
-    // Eğer zaten giriş yapmışsa direkt anasayfa.html ye yönlendir
     auth.onAuthStateChanged(user => {
       if(user) {
         window.location.href = 'anasayfa.html';
