@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ayarlar - ElevenGalaxy</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: Arial, sans-serif;
+  }
+  body {
+    display: flex;
+    background: #000;
+  }
+  #menu {
+    width: 90px;
+    height: 100vh;
+    background: url('https://drive.google.com/uc?export=view&id=1FzwO5e7XxsWM5qcV7g6QhLWTXDmyo7nk') no-repeat center center;
+    background-size: cover;
+    position: fixed;
+    left: 0; top: 0;
+  }
+  #content {
+    margin-left: 90px;
+    flex: 1;
+    height: 100vh;
+    background: #111;
+    color: white;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .menu-button {
+    position: absolute;
+    left: 10px;
+    width: 70px;
+    height: 40px;
+    cursor: pointer;
+  }
+  #btnDurum       { top: 80px; }
+  #btnLeaderboard { top: 140px; }
+  #btnProfil      { top: 200px; }
+  #btnMesaj       { top: 260px; }
+  #btnAyarlar     { bottom: 30px; }
+  .menu-button:hover {
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 5px;
+  }
+</style>
+</head>
+<body>
+
+<div id="menu">
+  <div class="menu-button" id="btnDurum" title="Durum" onclick="gotoPage('durum.html')"></div>
+  <div class="menu-button" id="btnLeaderboard" title="Leaderboard" onclick="gotoPage('leaderboard.html')"></div>
+  <div class="menu-button" id="btnProfil" title="Profil" onclick="gotoPage('profil.html')"></div>
+  <div class="menu-button" id="btnMesaj" title="Mesajlar" onclick="goto
