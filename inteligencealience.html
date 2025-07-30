@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>InteligenceAlience - AI Çizim</title>
+  <style>
+    body {
+      background-color: #0e0e0e;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+
+    textarea {
+      width: 80%;
+      max-width: 500px;
+      height: 100px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      resize: none;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #5b2bff;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    img {
+      margin-top: 20px;
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #5b2bff88;
+    }
+
+    #loading {
+      margin-top: 20px;
+      font-style: italic;
+      color: #aaa;
+    }
+
+    #error {
+      color: #ff4444;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎨 InteligenceAlience AI Çizim</h1>
+  <p>Prompt gir, AI çizimi senin için yapsın!</p>
+
+  <textarea id="prompt" placeholder="örnek: mavi saçlı anime kız uzayda gitar çalıyor"></textarea><br />
+  <button onclick="generateImage()">Çizimi Oluştur</button>
+
+  <div id="loading"></div>
+  <div id="error"></div>
+  <div id="result"></div>
+
+  <script>
+    async function generateImage() {
+      const prompt = document.getElementById('prompt').value.trim();
+      const loading = document.getElementById('loading');
+      const result = document.getElementById('result');
+      const error = document.getElementById('error');
+      error.textContent = '';
+      result.innerHTML = '';
+      
+      if (!prompt) {
+        error.textContent = "Lütfen bir prompt girin.";
+        return;
+      }
+
+      loading.textContent = "AI çizim hazırlanıyor, lütfen bekleyin...";
+
+      try {
+        const response = await fetch("https://api-inference.huggingface.co/models/harubaru/abyssorangemix", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer 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",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ inputs: prompt })
+        });
+
+        if (!response.ok) {
+          throw new Error("API'den cevap alınamadı: " + response.status);
+        }
+
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+        result.innerHTML = `<img src="${imageUrl}" alt="AI tarafından oluşturulan görsel" />`;
+      } catch (err) {
+        error.textContent = "Hata: " + err.message;
+      } finally {
+        loading.textContent = "";
+      }
+    }
+  </script>
+</body>
+    </html>
