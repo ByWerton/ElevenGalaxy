@@ -1,78 +1,113 @@
-<!-- Ana Sayfa (anasayfa.html) --><!DOCTYPE html><html lang="tr">
+  <!DOCTYPE html>
+<html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ana Sayfa</title>
+  <title>ElevenGalaxy Login</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
     body {
-      background: url('https://drive.google.com/uc?export=view&id=15jDjirW8WfnbnJYCcqXb-o1HeXq45IS-') no-repeat center center/cover;
       font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
-    #menu {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 110px;
-      height: 100%;
-      background: url('https://drive.google.com/uc?export=view&id=1FzwO5e7XxsWM5qcV7g6QhLWTXDmyo7nk') no-repeat center center;
-      background-size: cover;
+    .auth-box {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
     }
-    .menu-button {
-      position: absolute;
-      width: 80px;
-      height: 40px;
-      left: 15px;
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 5px;
+      background: #09f;
+      color: white;
       cursor: pointer;
     }
-    #btn-durum { top: 80px; }
-    #btn-leaderboard { top: 145px; }
-    #btn-profil { top: 215px; }
-    #btn-mesajlar { top: 285px; }
-    #btn-ayarlar { bottom: 25px; }
+    button:hover {
+      background: #0cf;
+    }
+    #error { color: red; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <div id="menu">
-    <a href="durum.html" class="menu-button" id="btn-durum"></a>
-    <a href="leaderboard.html" class="menu-button" id="btn-leaderboard"></a>
-    <a href="profil.html" class="menu-button" id="btn-profil"></a>
-    <a href="mesajlar.html" class="menu-button" id="btn-mesajlar"></a>
-    <a href="ayarlar.html" class="menu-button" id="btn-ayarlar"></a>
+  <div class="auth-box">
+    <h2>Giriş Yap</h2>
+    <input type="email" id="email" placeholder="E-posta">
+    <input type="password" id="password" placeholder="Şifre">
+    <button onclick="login()">Giriş Yap</button>
+    <button onclick="signup()">Kayıt Ol</button>
+    <p id="error"></p>
   </div>
-</body>
-</html><!-- Durum Sayfası (durum.html) --><!DOCTYPE html><html lang="tr">
-<head><meta charset="UTF-8"><title>Durum</title></head>
-<body style="margin:0;">
-  <iframe src="anasayfa.html" frameborder="0" style="width:100vw; height:100vh;"></iframe>
-</body>
-</html><!-- Leaderboard Sayfası (leaderboard.html) --><!DOCTYPE html><html lang="tr">
-<head><meta charset="UTF-8"><title>Leaderboard</title></head>
-<body style="margin:0;">
-  <iframe src="anasayfa.html" frameborder="0" style="width:100vw; height:100vh;"></iframe>
-</body>
-</html><!-- Profil Sayfası (profil.html) --><!DOCTYPE html><html lang="tr">
-<head><meta charset="UTF-8"><title>Profil</title></head>
-<body style="margin:0;">
-  <iframe src="anasayfa.html" frameborder="0" style="width:100vw; height:100vh;"></iframe>
-</body>
-</html><!-- Mesajlar Sayfası (mesajlar.html) --><!DOCTYPE html><html lang="tr">
-<head><meta charset="UTF-8"><title>Mesajlar</title></head>
-<body style="margin:0;">
-  <iframe src="anasayfa.html" frameborder="0" style="width:100vw; height:100vh;"></iframe>
-</body>
-</html><!-- Ayarlar Sayfası (ayarlar.html) --><!DOCTYPE html><html lang="tr">
-<head><meta charset="UTF-8"><title>Ayarlar</title></head>
-<body style="margin:0;">
-  <iframe src="anasayfa.html" frameborder="0" style="width:100vw; height:100vh;"></iframe>
+
+  <script type="module">
+    // Firebase importları
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword, 
+      createUserWithEmailAndPassword, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+
+    // Senin config (API key dahil)
+    const firebaseConfig = {
+      apiKey: "AIzaSyB7FeGeONvMD0J_7EkKqZhfUFGya6zR5Ig",
+      authDomain: "elevengalaxy-web.firebaseapp.com",
+      projectId: "elevengalaxy-web",
+      storageBucket: "elevengalaxy-web.appspot.com",
+      messagingSenderId: "1044606246550",
+      appId: "1:1044606246550:web:ba8d2759baa146f59f2cb7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Login
+    window.login = function() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("Başarıyla giriş yapıldı!");
+        })
+        .catch(e => document.getElementById("error").innerText = e.message);
+    }
+
+    // Signup
+    window.signup = function() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("Kayıt başarılı!");
+        })
+        .catch(e => document.getElementById("error").innerText = e.message);
+    }
+
+    // Kullanıcı durumu
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("Kullanıcı giriş yaptı:", user.email);
+      } else {
+        console.log("Kullanıcı çıkış yaptı.");
+      }
+    });
+  </script>
 </body>
 </html>
