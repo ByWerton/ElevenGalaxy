@@ -1,48 +1,89 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Onbir Galaksi</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js"></script>
-  <script src="firebase-config.js" defer></script>
-  <script src="auth.js" defer></script>
+  <title>Elevengalaxy</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #111;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    /* Menü alanı */
+    #menu {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      background: #000;
+    }
+    #menu img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* Tıklanabilir butonlar */
+    .menu-btn {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      cursor: pointer;
+    }
+    #btn-durum { top: 120px; }
+    #btn-leaderboard { top: 200px; }
+    #btn-profil { top: 280px; }
+    #btn-mesajlar { top: 360px; }
+    #btn-ayarlar { bottom: 40px; }
+
+    /* İçerik alanı */
+    #content {
+      margin-left: 250px;
+      width: calc(100% - 250px);
+      height: 100vh;
+      background: #1e1e1e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+    }
+  </style>
 </head>
 <body>
-  <div id="loader" class="loader">Yükleniyor...</div>
-
-  <!-- Giriş formu -->
-  <div id="login-container" class="auth-container">
-    <h2>Giriş Yap</h2>
-    <input type="email" id="login-email" placeholder="E-posta" required>
-    <input type="password" id="login-password" placeholder="Şifre" required>
-    <button id="login-btn">Giriş Yap</button>
-    <p>Hesabın yok mu? <a href="#" id="show-register">Kayıt Ol</a></p>
+  <div id="menu">
+    <img src="https://drive.google.com/uc?export=view&id=1FzwO5e7XxsWM5qcV7g6QhLWTXDmyo7nk" alt="Menü">
+    <div id="btn-durum" class="menu-btn" onclick="loadPage('durum')"></div>
+    <div id="btn-leaderboard" class="menu-btn" onclick="loadPage('leaderboard')"></div>
+    <div id="btn-profil" class="menu-btn" onclick="loadPage('profil')"></div>
+    <div id="btn-mesajlar" class="menu-btn" onclick="loadPage('mesajlar')"></div>
+    <div id="btn-ayarlar" class="menu-btn" onclick="loadPage('ayarlar')"></div>
   </div>
 
-  <!-- Kayıt formu -->
-  <div id="register-container" class="auth-container" style="display:none;">
-    <h2>Kayıt Ol</h2>
-    <input type="email" id="register-email" placeholder="E-posta" required>
-    <input type="password" id="register-password" placeholder="Şifre" required>
-    <button id="register-btn">Kayıt Ol</button>
-    <p>Zaten hesabın var mı? <a href="#" id="show-login">Giriş Yap</a></p>
+  <div id="content">
+    Ana Sayfa
   </div>
 
-  <!-- Menü (başta gizli) -->
-  <div id="menu" class="menu" style="display:none;">
-    <img src="menu.png" alt="Menü">
-    <ul>
-      <li><a href="anasayfa.html">🏠 Durum</a></li>
-      <li><a href="leaderboard.html">⭐ Leaderboard</a></li>
-      <li><a href="profil.html">👤 Profil</a></li>
-      <li><a href="mesajlar.html">💬 Mesajlar</a></li>
-      <li><a href="ayarlar.html">⚙ Ayarlar</a></li>
-    </ul>
-    <button id="logout-btn">Çıkış Yap</button>
-  </div>
+  <script>
+    function loadPage(page) {
+      if (page === "durum") {
+        document.getElementById("content").innerHTML = "<img src='https://drive.google.com/uc?export=view&id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9kC' style='width:100%;height:100%;object-fit:contain'>";
+      } else if (page === "leaderboard") {
+        document.getElementById("content").innerHTML = "<img src='https://drive.google.com/uc?export=view&id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i' style='width:100%;height:100%;object-fit:contain'>";
+      } else if (page === "profil") {
+        document.getElementById("content").innerHTML = "<img src='https://drive.google.com/uc?export=view&id=15mSBMsBaYg3wgPBEnVVJV0jLOuMlSll8' style='width:100%;height:100%;object-fit:contain'>";
+      } else if (page === "mesajlar") {
+        document.getElementById("content").innerHTML = "<img src='https://drive.google.com/uc?export=view&id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-' style='width:100%;height:100%;object-fit:contain'>";
+      } else if (page === "ayarlar") {
+        document.getElementById("content").innerHTML = "<img src='https://drive.google.com/uc?export=view&id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK' style='width:100%;height:100%;object-fit:contain'>";
+      }
+    }
+  </script>
 </body>
 </html>
