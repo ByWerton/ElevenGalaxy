@@ -1,89 +1,262 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Elevengalaxy</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #111;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
-    /* Menü alanı */
-    #menu {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 250px;
-      height: 100vh;
-      background: #000;
-    }
-    #menu img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    /* Tıklanabilir butonlar */
-    .menu-btn {
-      position: absolute;
-      left: 0;
-      width: 100%;
-      height: 60px;
-      cursor: pointer;
-    }
-    #btn-durum { top: 120px; }
-    #btn-leaderboard { top: 200px; }
-    #btn-profil { top: 280px; }
-    #btn-mesajlar { top: 360px; }
-    #btn-ayarlar { bottom: 40px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElevenGalaxy - Portal</title>
+    <!-- Tailwind CSS ve FontAwesome CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Kaydırma çubuğu özelleştirme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e1b4b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #312e81;
+        }
+        
+        /* Statik Üst Çerçeve Tasarımı */
+        .banner-frame {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Kart Hover Efekti */
+        .app-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(15, 12, 30, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .app-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(99, 102, 241, 0.6);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.25);
+        }
 
-    /* İçerik alanı */
-    #content {
-      margin-left: 250px;
-      width: calc(100% - 250px);
-      height: 100vh;
-      background: #1e1e1e;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 24px;
-    }
-  </style>
+        .neon-btn {
+            transition: all 0.3s ease;
+        }
+        .neon-btn:hover {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
-<body>
-  <div id="menu">
-    <img src="https://drive.google.com/uc?export=view&id=1FzwO5e7XxsWM5qcV7g6QhLWTXDmyo7nk" alt="Menü">
-    <div id="btn-durum" class="menu-btn" onclick="loadPage('durum')"></div>
-    <div id="btn-leaderboard" class="menu-btn" onclick="loadPage('leaderboard')"></div>
-    <div id="btn-profil" class="menu-btn" onclick="loadPage('profil')"></div>
-    <div id="btn-mesajlar" class="menu-btn" onclick="loadPage('mesajlar')"></div>
-    <div id="btn-ayarlar" class="menu-btn" onclick="loadPage('ayarlar')"></div>
-  </div>
+<body class="bg-black text-white font-sans overflow-x-hidden min-h-screen relative">
 
-  <div id="content">
-    Ana Sayfa
-  </div>
+    <!-- Gök Taşı ve Yıldız Kayması Efekti için Canvas Arka Planı -->
+    <canvas id="spaceCanvas" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"></canvas>
 
-  <script>
-    function loadPage(page) {
-      if (page === "durum") {
-        document.getElementById("content").innerHTML = "<img src='https://drive.google.com/uc?export=view&id=15iAsCZORWw8kzFLq7JzwlOuTJudNv9kC' style='width:100%;height:100%;object-fit:contain'>";
-      } else if (page === "leaderboard") {
-        document.getElementById("content").innerHTML = "<img src='https://drive.google.com/uc?export=view&id=15hI1-algW9kLquixXDOv2W2gHkapcQ-i' style='width:100%;height:100%;object-fit:contain'>";
-      } else if (page === "profil") {
-        document.getElementById("content").innerHTML = "<img src='https://drive.google.com/uc?export=view&id=15mSBMsBaYg3wgPBEnVVJV0jLOuMlSll8' style='width:100%;height:100%;object-fit:contain'>";
-      } else if (page === "mesajlar") {
-        document.getElementById("content").innerHTML = "<img src='https://drive.google.com/uc?export=view&id=15nYGqeG75rledWFUuZH3PtdQEeSe1eH-' style='width:100%;height:100%;object-fit:contain'>";
-      } else if (page === "ayarlar") {
-        document.getElementById("content").innerHTML = "<img src='https://drive.google.com/uc?export=view&id=15fxT8ZRrJzmSBhx_8x6HniRdKUrjrSUK' style='width:100%;height:100%;object-fit:contain'>";
-      }
-    }
-  </script>
+    <!-- Üst Header Bölümü ve Link Resmi (Statik Dikdörtgen Çerçeve) -->
+    <header class="w-full relative z-10">
+        <div class="max-w-4xl mx-auto px-4 pt-8 pb-4">
+            <!-- Üst Link Resmi - Tıklanamaz ve sade dikdörtgen çerçeve -->
+            <div class="w-full rounded-xl overflow-hidden banner-frame bg-zinc-950 relative">
+                <img 
+                    src="https://raw.githubusercontent.com/ByWerton/ElevenGalaxy/refs/heads/main/Screenshot_20260414_130826_CapCut.jpg" 
+                    alt="ElevenGalaxy Banner" 
+                    class="w-full h-auto max-h-[350px] object-cover object-center block"
+                    onerror="this.onerror=null; this.src='https://placehold.co/1200x400/09090b/6366f1?text=ElevenGalaxy+Banner';"
+                />
+            </div>
+        </div>
+    </header>
+
+    <!-- Ana İçerik -->
+    <main class="relative z-10 max-w-4xl mx-auto px-4 py-8">
+        
+        <!-- Sunuş Bölümü -->
+        <section class="text-center my-8 max-w-2xl mx-auto">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4 text-indigo-400">Yıldızların Ötesinde Kodlama</h2>
+            <p class="text-zinc-400 text-sm md:text-base leading-relaxed">
+                ElevenGalaxy ekosistemine hoş geldiniz. Aşağıda, modern teknolojiler ve stabilite odaklı geliştirilen açık kaynaklı uygulamamızı bulabilirsiniz. Projeyi incelemek için butona tıklayarak doğrudan GitHub sayfasına gidebilirsiniz.
+            </p>
+        </section>
+
+        <!-- Uygulamalar Bölümü -->
+        <section class="mt-12">
+            <div class="flex items-center justify-between mb-8 border-b border-zinc-800 pb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-3 h-3 bg-indigo-500 rounded-full animate-ping"></div>
+                    <h3 class="text-xl md:text-2xl font-bold tracking-wider uppercase text-zinc-100">Uygulamalar</h3>
+                </div>
+                <span class="text-xs md:text-sm text-zinc-500">Toplam: 1 Proje</span>
+            </div>
+
+            <!-- Tek Proje İçin Ortalanmış Kart Düzeni -->
+            <div class="flex justify-center">
+                
+                <!-- SADECE EPHYXDRIVE -->
+                <div class="app-card rounded-2xl p-8 flex flex-col justify-between relative overflow-hidden group w-full max-w-xl">
+                    <!-- Öne Çıkarılan Proje Rozeti -->
+                    <div class="absolute -top-1 -right-1">
+                        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-[10px] uppercase font-bold px-4 py-1.5 rotate-45 translate-x-3 translate-y-2 shadow-lg">
+                            Öne Çıkan
+                        </div>
+                    </div>
+
+                    <div>
+                        <!-- Logo / İkon Alanı -->
+                        <div class="w-16 h-16 bg-indigo-600/20 rounded-2xl flex items-center justify-center border border-indigo-500/30 mb-6">
+                            <i class="fa-solid fa-hard-drive text-3xl text-indigo-400 animate-pulse"></i>
+                        </div>
+                        
+                        <!-- Başlık -->
+                        <h4 class="text-2xl font-extrabold mb-3 group-hover:text-indigo-400 transition-colors tracking-tight">
+                            EphyXDrive
+                        </h4>
+                        
+                        <!-- Yeni Açıklama Metni -->
+                        <p class="text-zinc-300 text-sm md:text-base leading-relaxed mb-8">
+                            Game,Model and Animation Program -EphyXDrive Original app file
+                        </p>
+                    </div>
+
+                    <!-- Kart Altı Bilgileri ve Link Butonu -->
+                    <div class="pt-5 border-t border-zinc-800/60 flex items-center justify-between">
+                        <div class="flex space-x-2 text-xs text-indigo-300">
+                            <span class="px-3 py-1.5 bg-zinc-900/80 rounded-md font-semibold">GitHub</span>
+                            <span class="px-3 py-1.5 bg-zinc-900/80 rounded-md font-semibold">Luau/C++</span>
+                        </div>
+                        <a 
+                            href="https://github.com/ByWerton/EphyXDrive-Elevenagalaxy" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            class="neon-btn px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-sm font-bold rounded-xl flex items-center space-x-2 text-white"
+                        >
+                            <span>İncele</span>
+                            <i class="fa-brands fa-github text-base"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Alt Bilgi -->
+    <footer class="relative z-10 border-t border-zinc-900 bg-black/80 backdrop-blur-md mt-24 py-8">
+        <div class="max-w-4xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between text-zinc-500 text-sm">
+            <p>© 2026 ElevenGalaxy. Tüm Hakları Saklıdır.</p>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+                <a href="https://github.com/ByWerton" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-400 transition-colors flex items-center space-x-1">
+                    <i class="fa-brands fa-github"></i>
+                    <span>ByWerton GitHub</span>
+                </a>
+                <span class="text-zinc-800">|</span>
+                <span class="text-indigo-500/80">Kozmik Sürüm v2.0</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Yıldız Kayması ve Gök Taşı Animasyon Scripti -->
+    <script>
+        const canvas = document.getElementById('spaceCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let stars = [];
+        let meteors = [];
+        const maxStars = 120;
+        const maxMeteors = 3;
+
+        // Ekran boyutu değiştiğinde canvası güncelle
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initStars();
+        }
+
+        // Yıldızları Başlat
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < maxStars; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5,
+                    brightness: Math.random(),
+                    speed: 0.02 + Math.random() * 0.03
+                });
+            }
+        }
+
+        // Yeni Gök Taşı (Kayan Yıldız) Oluştur
+        function createMeteor() {
+            return {
+                x: Math.random() * canvas.width,
+                y: -50,
+                length: 80 + Math.random() * 120,
+                speed: 12 + Math.random() * 15,
+                thickness: 1 + Math.random() * 2,
+                opacity: 1
+            };
+        }
+
+        // Animasyon Döngüsü
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Arkaplan Yıldızlarını Çiz ve Kırpıştır
+            stars.forEach(star => {
+                star.brightness += star.speed;
+                if (star.brightness > 1 || star.brightness < 0) {
+                    star.speed = -star.speed;
+                }
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.brightness)})`;
+                ctx.fillRect(star.x, star.y, star.size, star.size);
+            });
+
+            // 2. Gök Taşlarını (Yıldız Kayması) Çiz ve Güncelle
+            if (meteors.length < maxMeteors && Math.random() < 0.015) {
+                meteors.push(createMeteor());
+            }
+
+            for (let i = meteors.length - 1; i >= 0; i--) {
+                let m = meteors[i];
+                
+                // Gök Taşı Hareketi (Sağ Aşağıya Doğru Kayar)
+                m.x += m.speed;
+                m.y += m.speed * 0.8; 
+                m.opacity -= 0.015;
+
+                if (m.opacity <= 0 || m.x > canvas.width || m.y > canvas.height) {
+                    meteors.splice(i, 1);
+                    continue;
+                }
+
+                // Gök taşının kuyruk efekti (Gradient)
+                let grad = ctx.createLinearGradient(m.x, m.y, m.x - m.length, m.y - (m.length * 0.8));
+                grad.addColorStop(0, `rgba(99, 102, 241, ${m.opacity})`);      // Parlak kafa (Indigo)
+                grad.addColorStop(0.3, `rgba(139, 92, 246, ${m.opacity * 0.6})`); // Orta kısım (Mor)
+                grad.addColorStop(1, 'rgba(0, 0, 0, 0)');                         // Şeffaf kuyruk
+
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = m.thickness;
+                ctx.beginPath();
+                ctx.moveTo(m.x, m.y);
+                ctx.lineTo(m.x - m.length, m.y - (m.length * 0.8));
+                ctx.stroke();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Olay Dinleyicileri
+        window.addEventListener('resize', resizeCanvas);
+        
+        window.onload = function() {
+            resizeCanvas();
+            animate();
+        };
+    </script>
 </body>
 </html>
